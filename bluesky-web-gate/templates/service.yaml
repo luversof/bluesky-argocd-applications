@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: {{ .Chart.Name }}
-    spring-boot: true
+    spring-boot: 'true'
   name: {{ .Chart.Name }}-service
   namespace: default
 spec:
