@@ -4,7 +4,7 @@ replicaCount: 1
 springProfilesActive: k8sdev
 
 image:
-  host: nexus.bluesky.local:8083
+  host:
   artifactId: 
   buildVersion: 
   buildNumber: 
