@@ -7,4 +7,10 @@ service:
   port: 30132
   nodePort: 30132
   
-  
+ingress:
+  enabled: true
+  hosts:
+  - host: blog.api.bluesky.local
+    paths:
+    - path: /
+      pathType: Prefix
