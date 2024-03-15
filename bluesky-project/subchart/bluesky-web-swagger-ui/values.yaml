@@ -10,7 +10,7 @@ service:
 ingress:
   enabled: true
   hosts:
-  - host: gate.web.bluesky.local
+  - host: swagger.web.bluesky.local
     paths:
     - path: /
       pathType: Prefix
