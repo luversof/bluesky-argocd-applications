@@ -1,0 +1,10 @@
+nameOverride: bluesky-cloud-admin-server
+
+image:
+  artifactId: bluesky-cloud-admin-server
+  
+service:
+  port: 30102
+  nodePort: 30102
+  
+  

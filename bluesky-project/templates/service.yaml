@@ -5,7 +5,6 @@ metadata:
     app: {{ include "bluesky-project.name" . }}
     spring-boot: 'true'
   name: {{ include "bluesky-project.name" . }}-service
-  namespace: default
 spec:
   ports:
     - name : http

@@ -1,0 +1,10 @@
+nameOverride: bluesky-cloud-config-server
+
+image:
+  artifactId: bluesky-cloud-config-server
+  
+service:
+  port: 30101
+  nodePort: 30101
+  
+  

@@ -7,4 +7,6 @@ service:
   port: 30120
   nodePort: 30120
   
-  
+ingress:
+  hosts:
+  - host: gate.web.bluesky.local

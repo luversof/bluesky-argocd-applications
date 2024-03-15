@@ -1,0 +1,10 @@
+nameOverride: bluesky-api-board
+
+image:
+  artifactId: bluesky-api-board
+  
+service:
+  port: 30133
+  nodePort: 30133
+  
+  

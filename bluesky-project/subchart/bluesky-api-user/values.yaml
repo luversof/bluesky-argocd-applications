@@ -1,0 +1,10 @@
+nameOverride: bluesky-api-user
+
+image:
+  artifactId: bluesky-api-user
+  
+service:
+  port: 30131
+  nodePort: 30131
+  
+  

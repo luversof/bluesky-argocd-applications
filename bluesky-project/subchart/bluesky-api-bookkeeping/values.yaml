@@ -1,0 +1,10 @@
+nameOverride: bluesky-api-bookkeeping
+
+image:
+  artifactId: bluesky-api-bookkeeping
+  
+service:
+  port: 30130
+  nodePort: 30130
+  
+  

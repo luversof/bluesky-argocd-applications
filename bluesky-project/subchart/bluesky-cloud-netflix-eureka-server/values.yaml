@@ -1,0 +1,10 @@
+nameOverride: bluesky-cloud-neflix-server
+
+image:
+  artifactId: bluesky-cloud-neflix-server
+  
+service:
+  port: 30100
+  nodePort: 30100
+  
+  

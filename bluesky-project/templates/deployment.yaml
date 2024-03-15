@@ -4,7 +4,6 @@ metadata:
   labels:
     app: {{ include "bluesky-project.name" . }}
   name: {{ include "bluesky-project.name" . }}-deployment
-  namespace: default
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}

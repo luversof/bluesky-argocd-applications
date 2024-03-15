@@ -1,0 +1,10 @@
+nameOverride: bluesky-api-blog
+
+image:
+  artifactId: bluesky-api-blog
+  
+service:
+  port: 30132
+  nodePort: 30132
+  
+  

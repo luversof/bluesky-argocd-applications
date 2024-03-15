@@ -34,6 +34,13 @@ readinessProbe:
   periodSeconds: 10
   failureThreshold: 5
 
+ingress:
+	enabled: true
+	hosts:
+	  - path: /
+	    pathType: Prefix
+
+
 autoscaling:
   enabled: false
   minReplicas: 1
