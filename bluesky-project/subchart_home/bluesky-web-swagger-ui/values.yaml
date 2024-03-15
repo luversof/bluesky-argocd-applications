@@ -1,3 +1,4 @@
+nameOverride: bluesky-web-swagger-ui
 
 image:
   artifactId: bluesky-web-swagger-ui
