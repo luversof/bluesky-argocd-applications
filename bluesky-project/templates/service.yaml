@@ -15,4 +15,4 @@ spec:
       targetPort: http
   selector:
     app: {{ include "bluesky-project.name" . }}
-  type: {{ .Values.service.port }}
+  type: {{ .Values.service.type }}
