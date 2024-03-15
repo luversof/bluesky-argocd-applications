@@ -11,5 +11,6 @@ ingress:
   enabled: true
   hosts:
   - host: swagger.web.bluesky.local
-    path: /
-    pathType: Prefix
+    paths:
+    - path: /
+      pathType: Prefix
