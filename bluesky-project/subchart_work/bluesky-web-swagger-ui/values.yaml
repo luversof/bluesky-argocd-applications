@@ -1,0 +1,11 @@
+
+image:
+  artifactId: bluesky-web-swagger-ui
+  buildVersion: 0.0.1-SNAPSHOT
+  buildNumber: 175
+  
+service:
+  port: 30120
+  nodePort: 30120
+  
+  
