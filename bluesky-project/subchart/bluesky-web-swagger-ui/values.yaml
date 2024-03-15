@@ -8,5 +8,8 @@ service:
   nodePort: 30120
   
 ingress:
+  enabled: true
   hosts:
   - host: gate.web.bluesky.local
+    path: /
+    pathType: Prefix

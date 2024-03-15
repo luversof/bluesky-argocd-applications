@@ -6,7 +6,10 @@ image:
 service:
   port: 30122
   nodePort: 30122
-  
+
 ingress:
+  enabled: true
   hosts:
   - host: swagger.web.bluesky.local
+    path: /
+    pathType: Prefix
