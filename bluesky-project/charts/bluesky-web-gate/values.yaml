@@ -1,0 +1,7 @@
+
+image:
+  artifactId: bluesky-web-gate
+  
+service:
+  port: 30122
+  nodePort: 30122
