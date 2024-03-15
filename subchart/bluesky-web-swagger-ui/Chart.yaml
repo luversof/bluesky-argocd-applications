@@ -3,6 +3,8 @@ name: bluesky-web-swagger-ui
 description: A Helm chart for Kubernetes
 dependencies:
 - repository: https://luversof.github.io/bluesky-argocd-applications/
+  name: bluesky-project
+  version: 0.1.0
 
 # A chart can be either an 'application' or a 'library' chart.
 #
