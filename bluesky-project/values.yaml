@@ -5,9 +5,9 @@ springProfilesActive: k8sdev
 
 image:
   host: nexus.bluesky.local:8083
-  artifactId: bluesky-web-gate
-  buildVersion: 0.0.1-SNAPSHOT
-  buildNumber: 175
+  artifactId: 
+  buildVersion: 
+  buildNumber: 
   
 imagePullSecrets:
  - name: regcred
@@ -15,8 +15,8 @@ nameOverride: ""
   
 service:
   type: NodePort
-  port: 30122
-  nodePort: 30122
+  port: 
+  nodePort: 
   
   
 livenessProbe:
