@@ -2,8 +2,6 @@ nameOverride: bluesky-web-swagger-ui
 
 image:
   artifactId: bluesky-web-swagger-ui
-  buildVersion: 0.0.1-SNAPSHOT
-  buildNumber: 115
   
 service:
   port: 30120
