@@ -1,5 +1,7 @@
 nameOverride: bluesky-cloud-config-server
 
+springProfilesActive: k8sdev,jdbc
+
 image:
   artifactId: bluesky-cloud-config-server
   
