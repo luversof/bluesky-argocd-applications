@@ -35,10 +35,10 @@ readinessProbe:
   failureThreshold: 5
 
 ingress:
-	enabled: true
-	hosts:
-	  - path: /
-	    pathType: Prefix
+  enabled: true
+  hosts:
+  - path: /
+    pathType: Prefix
 
 
 autoscaling:
