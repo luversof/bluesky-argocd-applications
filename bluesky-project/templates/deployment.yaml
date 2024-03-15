@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}
-  name: {{ .Chart.Name }}-deployment
+    app: {{ include "bluesky-project.name" . }}
+  name: {{ include "bluesky-project.name" . }}-deployment
   namespace: default
 spec:
   {{- if not .Values.autoscaling.enabled }}
@@ -11,19 +11,21 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
+      app: {{ include "bluesky-project.name" . }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
+        app: {{ include "bluesky-project.name" . }}
     spec:
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: regcred
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: spring
           args:
             - '--spring.profiles.active={{ .Values.springProfilesActive }}'
-            - '--spring.application.name={{ .Chart.Name }}'
+            - '--spring.application.name={{ include "bluesky-project.name" . }}'
           workingDir: /usr/local/app
           image: '{{ .Values.image.host }}/luversof/{{ .Values.image.artifactId}}:{{ .Values.image.buildVersion }}.{{ .Values.image.buildNumber }}'
           livenessProbe:

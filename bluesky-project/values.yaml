@@ -9,7 +9,12 @@ image:
   buildVersion: 0.0.1-SNAPSHOT
   buildNumber: 175
   
+imagePullSecrets:
+ - name: regcred
+nameOverride: ""
+  
 service:
+  type: NodePort
   port: 30122
   nodePort: 30122
   
