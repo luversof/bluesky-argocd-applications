@@ -1,7 +1,7 @@
-nameOverride: bluesky-cloud-neflix-server-2
+nameOverride: bluesky-cloud-netflix-server-2
 
 image:
-  artifactId: bluesky-cloud-neflix-server
+  artifactId: bluesky-cloud-netflix-server
   
 service:
   port: 30100
