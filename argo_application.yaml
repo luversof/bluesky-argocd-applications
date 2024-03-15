@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bluesky-web-gate
+spec:
+  destination:
+    name: ''
+    namespace: ''
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: bluesky-project
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - subchart/bluesky-web-gate/values.yaml
+        - subchart_home/buildInfo-bluesky-project/values.yaml
+  sources: []
+  project: default
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bluesky-web-swagger-ui
+spec:
+  destination:
+    name: ''
+    namespace: ''
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: bluesky-project
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - subchart/bluesky-web-swagger-ui/values.yaml
+        - subchart_home/buildInfo-bluesky-project/values.yaml
+  sources: []
+  project: default
