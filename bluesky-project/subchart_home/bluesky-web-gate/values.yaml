@@ -1,0 +1,12 @@
+nameOverride: bluesky-web-gate
+
+image:
+  artifactId: bluesky-web-gate
+  buildVersion: 0.0.1-SNAPSHOT
+  buildNumber: 115
+  
+service:
+  port: 30122
+  nodePort: 30122
+  
+  
