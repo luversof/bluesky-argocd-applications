@@ -7,4 +7,10 @@ service:
   port: 30103
   nodePort: 30103
   
-  
+ingress:
+  enabled: true
+  hosts:
+  - host: gateway.cloud.bluesky.local
+    paths:
+    - path: /
+      pathType: Prefix

@@ -7,4 +7,10 @@ service:
   port: 30102
   nodePort: 30102
   
-  
+ingress:
+  enabled: true
+  hosts:
+  - host: admin.cloud.bluesky.local
+    paths:
+    - path: /
+      pathType: Prefix
