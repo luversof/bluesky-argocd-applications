@@ -1,0 +1,38 @@
+
+replicaCount: 1
+
+springProfilesActive: k8sdev
+
+image:
+  host: nexus.bluesky.local:8083
+  artifactId: bluesky-web-swagger-ui
+  buildVersion: 0.0.1-SNAPSHOT
+  buildNumber: 175
+  
+service:
+  port: 30120
+  nodePort: 30120
+  
+  
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 3
+  failureThreshold: 60
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: http
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  failureThreshold: 5
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  
+resources: {}
