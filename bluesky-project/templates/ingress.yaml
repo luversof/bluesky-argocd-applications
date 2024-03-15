@@ -1,7 +1,9 @@
+{{- if .Values.ingress.enabled -}}
+{{- $name := include "bluesky-project.name" . -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "bluesky-project.name" . }}-ingress
+  name: {{ $name }}-ingress
 spec:
   rules:
   {{- range .Values.ingress.hosts }}
@@ -13,8 +15,9 @@ spec:
         pathType: {{ .pathType }}
         backend:
           service:
-            name: {{ include "bluesky-project.name" . }}-service
+            name: {{ $name }}-service
             port:
               number: {{ .Values.service.port }}
       {{- end }}
   {{- end }}
+{{- end }}
