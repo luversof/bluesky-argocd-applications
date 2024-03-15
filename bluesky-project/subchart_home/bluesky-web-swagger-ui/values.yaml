@@ -9,4 +9,3 @@ service:
   nodePort: 30120
   
   
-nameOverride: bluesky-web-swagger-ui
