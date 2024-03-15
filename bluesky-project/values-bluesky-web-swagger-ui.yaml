@@ -5,13 +5,13 @@ springProfilesActive: k8sdev
 
 image:
   host: nexus.bluesky.local:8083
-  artifactId: bluesky-web-gate
+  artifactId: bluesky-web-swagger-ui
   buildVersion: 0.0.1-SNAPSHOT
   buildNumber: 175
   
 service:
-  port: 30122
-  nodePort: 30122
+  port: 30120
+  nodePort: 30120
   
   
 livenessProbe:
