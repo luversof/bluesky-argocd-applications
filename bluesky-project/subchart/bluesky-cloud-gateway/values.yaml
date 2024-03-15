@@ -1,7 +1,7 @@
-nameOverride: bluesky-cloud-gate-way
+nameOverride: bluesky-cloud-gateway
 
 image:
-  artifactId: bluesky-cloud-gate-way
+  artifactId: bluesky-cloud-gateway
   
 service:
   port: 30103
