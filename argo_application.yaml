@@ -61,7 +61,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bluesky-cloud-neflix-eureka-server-1
+  name: bluesky-cloud-netflix-eureka-server-1
 spec:
   destination:
     name: ''
@@ -73,7 +73,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - subchart/bluesky-cloud-neflix-eureka-server-1/values.yaml
+        - subchart/bluesky-cloud-netflix-eureka-server-1/values.yaml
         - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
@@ -81,7 +81,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bluesky-cloud-neflix-eureka-server-2
+  name: bluesky-cloud-netflix-eureka-server-2
 spec:
   destination:
     name: ''
@@ -93,7 +93,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - subchart/bluesky-cloud-neflix-eureka-server-2/values.yaml
+        - subchart/bluesky-cloud-netflix-eureka-server-2/values.yaml
         - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default

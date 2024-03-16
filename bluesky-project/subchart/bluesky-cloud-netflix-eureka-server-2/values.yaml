@@ -5,7 +5,7 @@ image:
   
 service:
   port: 30100
-  nodePort: 30100
+  nodePort: 30104
   
 ingress:
   enabled: true
