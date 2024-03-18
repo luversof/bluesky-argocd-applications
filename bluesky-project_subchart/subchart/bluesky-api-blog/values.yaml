@@ -1,16 +1,14 @@
-nameOverride: bluesky-api-blog
-
-image:
-  artifactId: bluesky-api-blog
-  
-service:
-  port: 30132
-  nodePort: 30132
-  
-ingress:
-  enabled: true
-  hosts:
-  - host: blog.api.bluesky.local
-    paths:
-    - path: /
-      pathType: Prefix
+bluesky-project:
+  nameOverride: bluesky-api-blog
+  image:
+    artifactId: bluesky-api-blog
+  service:
+    port: 30132
+    nodePort: 30132
+  ingress:
+    enabled: true
+    hosts:
+    - host: blog.api.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix

@@ -1,4 +1,5 @@
-image:
-  host: nexus.bluesky.local:8083
-  buildVersion: 0.0.1-SNAPSHOT
-  buildNumber: 175
+bluesky-project:
+  image:
+    host: nexus.bluesky.local:8083
+    buildVersion: 0.0.1-SNAPSHOT
+    buildNumber: 175
