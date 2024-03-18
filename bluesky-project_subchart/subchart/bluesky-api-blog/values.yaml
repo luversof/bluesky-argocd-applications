@@ -1,4 +1,4 @@
-bluesky-project:
+global:
   nameOverride: bluesky-api-blog
   image:
     artifactId: bluesky-api-blog

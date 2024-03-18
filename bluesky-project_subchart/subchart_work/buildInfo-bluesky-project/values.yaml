@@ -1,4 +1,4 @@
-bluesky-project:
+global:
   image:
     host: nexus.bluesky.local:8083
     buildVersion: 0.0.1-SNAPSHOT
