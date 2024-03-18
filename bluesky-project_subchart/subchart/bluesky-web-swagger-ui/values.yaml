@@ -1,0 +1,16 @@
+nameOverride: bluesky-web-swagger-ui
+
+image:
+  artifactId: bluesky-web-swagger-ui
+  
+service:
+  port: 30120
+  nodePort: 30120
+  
+ingress:
+  enabled: true
+  hosts:
+  - host: swagger.web.bluesky.local
+    paths:
+    - path: /
+      pathType: Prefix

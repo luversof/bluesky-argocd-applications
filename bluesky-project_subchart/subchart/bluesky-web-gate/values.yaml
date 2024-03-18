@@ -1,0 +1,16 @@
+nameOverride: bluesky-web-gate
+
+image:
+  artifactId: bluesky-web-gate
+  
+service:
+  port: 30122
+  nodePort: 30122
+
+ingress:
+  enabled: true
+  hosts:
+  - host: gate.web.bluesky.local
+    paths:
+    - path: /
+      pathType: Prefix
