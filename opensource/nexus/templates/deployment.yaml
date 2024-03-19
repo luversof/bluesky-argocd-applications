@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus-deployment
+  labels:
+    app: nexus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
+  template:
+    metadata:
+      labels:
+        app: nexus
+    spec:
+      containers:
+      - name: nexus
+        image: sonatype/nexus3:latest
+#        resources:
+#          limits:
+#            cpu: "4"
+        ports:
+        - containerPort: 8081
+        - containerPort: 8083
+        resources:
+          requests:
+#            cpu: '1'
+            memory: '1Gi'
+          limits:
+#            cpu: '2'
+            memory: '2Gi'
+        volumeMounts:
+        - name: nexus-data
+          mountPath: /nexus-data
+      volumes:
+      - name: nexus-data
+        persistentVolumeClaim:
+          claimName: nexus-data-pvc

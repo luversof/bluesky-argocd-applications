@@ -1,0 +1,3 @@
+PersistentVolume:
+  hostPath:
+    path: /mnt/f/dev/data/mongo

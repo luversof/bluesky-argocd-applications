@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-ingress
+spec:
+  rules:
+  - host: minio.bluesky.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio-service
+            port:
+              number: 9001  # console port임 kubernetes 이외에서 호출해서 쓸일이 있을까...
