@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: mariadb-ingress
 spec:
+  rules:
   - host: mariadb.bluesky.local
     http:
       paths:
