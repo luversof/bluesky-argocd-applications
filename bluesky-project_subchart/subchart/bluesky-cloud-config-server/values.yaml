@@ -1,18 +1,15 @@
-nameOverride: bluesky-cloud-config-server
-
-springProfilesActive: k8sdev,jdbc
-
-image:
-  artifactId: bluesky-cloud-config-server
-  
-service:
-  port: 30101
-  nodePort: 30101
-  
-ingress:
-  enabled: true
-  hosts:
-  - host: config.cloud.bluesky.local
-    paths:
-    - path: /
-      pathType: Prefix
+bluesky-project:
+  nameOverride: bluesky-cloud-config-server
+  springProfilesActive: k8sdev,jdbc
+  image:
+    artifactId: bluesky-cloud-config-server
+  service:
+    port: 30101
+    nodePort: 30101
+  ingress:
+    enabled: true
+    hosts:
+    - host: config.cloud.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
