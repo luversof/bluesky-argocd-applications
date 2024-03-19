@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mssql-data-pv
+  labels:
+    app: mssql-data-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.PersistentVolume.data.hostPath.path }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mssql-log-pv
+  labels:
+    app: mssql-log-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.PersistentVolume.log.hostPath.path }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mssql-secrets-pv
+  labels:
+    app: mssql-secrets-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.PersistentVolume.secrets.hostPath.path }}

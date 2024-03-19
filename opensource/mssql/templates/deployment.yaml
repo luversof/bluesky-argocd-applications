@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-deployment
+  labels:
+    app: mssql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      containers:
+      - name: mssql
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mssql-sa-password
+              name: mssql-secret
+        - name: MSSQL_COLLATION
+          value: "Korean_Wansung_CS_AS"
+        resources:
+          requests:
+#            cpu: '500m'
+            memory: '1Gi'
+          limits:
+#            cpu: '500m'
+            memory: '2Gi'
+        volumeMounts:
+        - name: mssql-data
+          mountPath: /var/opt/mssql/data
+        - name: mssql-log
+          mountPath: /var/opt/mssql/log
+        - name: mssql-secrets
+          mountPath: /var/opt/mssql/secrets
+      volumes:
+      - name: mssql-data
+        persistentVolumeClaim:
+          claimName: mssql-data-pvc
+      - name: mssql-log
+        persistentVolumeClaim:
+          claimName: mssql-log-pvc
+      - name: mssql-secrets
+        persistentVolumeClaim:
+          claimName: mssql-secrets-pvc
