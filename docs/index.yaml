@@ -3,12 +3,12 @@ entries:
   bluesky-project:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-03-19T07:50:52.7915078+09:00"
+    created: "2024-03-19T15:24:27.7349262+09:00"
     description: A Helm chart for Kubernetes
-    digest: 02c51cbc4cbcade69e46d39320f28297801901c648251c1a316d7995c08d5d51
+    digest: edca0ddb41be1825f57dfe8dad1009d643c36a2cbbf18234391b117db04eeff0
     name: bluesky-project
     type: application
     urls:
     - bluesky-project-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-19T07:50:52.7899337+09:00"
+generated: "2024-03-19T15:24:27.7338085+09:00"

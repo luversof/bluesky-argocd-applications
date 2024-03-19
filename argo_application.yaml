@@ -8,7 +8,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -28,7 +28,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -48,7 +48,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -68,7 +68,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -88,7 +88,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -108,7 +108,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -128,7 +128,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -148,7 +148,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -168,7 +168,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -188,7 +188,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
@@ -208,7 +208,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: bluesky-project
+    path: bluesky-project_subchart
     repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
     targetRevision: develop
     helm:
