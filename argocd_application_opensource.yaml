@@ -1,6 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: mariadb
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: opensource/mariadb
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values-work.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: mssql
 spec:
   destination:
@@ -16,3 +39,145 @@ spec:
         - values-work.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: opensource/minio
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values-work.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mongo
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: opensource/mongo
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values-work.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nexus
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: opensource/nexus
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values-work.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: opensource/postgres
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values-work.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rabbitmq
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: opensource/rabbitmq
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values-work.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: opensource/redis
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values-work.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

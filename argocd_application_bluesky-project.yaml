@@ -17,6 +17,10 @@ spec:
         - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -37,6 +41,10 @@ spec:
         - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -57,6 +65,10 @@ spec:
         - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -77,6 +89,10 @@ spec:
         - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -97,6 +113,10 @@ spec:
         - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -117,6 +137,10 @@ spec:
         - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -137,6 +161,10 @@ spec:
         - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -157,6 +185,10 @@ spec:
         - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -177,6 +209,10 @@ spec:
         - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -197,6 +233,10 @@ spec:
         - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -217,3 +257,7 @@ spec:
         - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
