@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: jenkins/jenkins:jdk21
+#        image: luversof/jenkins
+#        imagePullPolicy: Never 
+        lifecycle:
+          postStart:
+            exec:
+              command: 
+              - /bin/sh
+              - -c
+              - |
+                apt-get update
+                curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+                apt-get install -y yq >/dev/null
+        ports:
+        - containerPort: 8080
+        - containerPort: 50000
+        env:
+        - name: JAVA_OPTS
+          value: "-Duser.timezone=Asia/Seoul"
+        resources:
+          requests:
+#            cpu: '1'
+            memory: '1Gi'
+          limits:
+#            cpu: '2'
+            memory: '4Gi'
+        volumeMounts:
+        - name: jenkins-docker-socket
+          mountPath: /var/run/docker.sock
+#        - name: jenkins-docker-binary
+#          mountPath: /usr/bin/docker
+        - name: jenkins-docker-config
+          mountPath: /root/.docker
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        - name: jenkins-m2
+          mountPath: /root/.m2
+        # 절대 권장하지 않는 방식임
+        securityContext:
+          privileged: true
+#          allowPrivilegeEscalation: false
+          runAsUser: 0
+      volumes:
+      - name: jenkins-docker-socket
+        hostPath:
+          path: /var/run/docker.sock
+#      - name: jenkins-docker-binary
+#        hostPath:
+#          path: /usr/bin/docker
+      - name: jenkins-docker-config
+        persistentVolumeClaim:
+          claimName: jenkins-docker-config-pvc
+      - name: jenkins-home
+        persistentVolumeClaim:
+          claimName: jenkins-home-pvc
+      - name: jenkins-m2
+        persistentVolumeClaim:
+          claimName: jenkins-m2-pvc
+#      imagePullSecrets:
+#      - name: bluesky-secret

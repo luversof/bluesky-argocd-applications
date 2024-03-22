@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-docker-config-pvc
+spec:
+  volumeName: jenkins-docker-config-pv
+  storageClassName: ""
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-home-pvc
+spec:
+  volumeName: jenkins-home-pv
+  storageClassName: ""
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-m2-pvc
+spec:
+  volumeName: jenkins-m2-pv
+  storageClassName: ""
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

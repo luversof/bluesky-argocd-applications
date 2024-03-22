@@ -1,0 +1,10 @@
+PersistentVolume:
+  jenkinsDockerConfig:
+    hostPath:
+      path: /mnt/f/dev/data/jenkins-docker
+  jenkinsHome:
+    hostPath:
+      path: /mnt/f/dev/data/jenkins-home
+  jenkinsM2:
+    hostPath:
+      path: /mnt/f/dev/data/jenkins-m2

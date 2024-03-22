@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-docker-config-pv
+  labels:
+    app: jenkins-docker-config-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.PersistentVolume.jenkinsDockerConfig.hostPath.path }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-home-pv
+  labels:
+    app: jenkins-home-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.PersistentVolume.jenkinsHome.hostPath.path }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-m2-pv
+  labels:
+    app: jenkins-m2-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.PersistentVolume.jenkinsM2.hostPath.path }}
