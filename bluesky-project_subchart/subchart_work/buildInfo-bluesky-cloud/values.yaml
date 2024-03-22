@@ -3,3 +3,5 @@ bluesky-project:
     host: nexus.bluesky.local:8083
     buildVersion: 0.0.1-SNAPSHOT
     buildNumber: 168
+image:
+  buildNumber: 170
