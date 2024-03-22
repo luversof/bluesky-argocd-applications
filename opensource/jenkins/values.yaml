@@ -1,3 +1,10 @@
 PersistentVolume:
-  hostPath:
-    path: 
+  jenkinsDockerConfig:
+    hostPath:
+      path:
+  jenkinsHome:
+    hostPath:
+      path:
+  jenkinsM2:
+    hostPath:
+      path:
