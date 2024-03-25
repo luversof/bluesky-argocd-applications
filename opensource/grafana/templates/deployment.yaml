@@ -1,0 +1,29 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: grafana-deployment 
+  labels: 
+    app: grafana 
+spec: 
+  selector: 
+    matchLabels: 
+      app: grafana 
+  template: 
+    metadata: 
+      labels: 
+        app: grafana 
+    spec: 
+      securityContext: 
+        runAsUser: 0 
+      containers: 
+      - name: grafana 
+        image: grafana/grafana:latest 
+        ports: 
+        - containerPort: 3000 
+        volumeMounts: 
+        - name: grafana-data 
+          mountPath: /var/lib/grafana/ 
+      volumes: 
+      - name: grafana-data 
+        persistentVolumeClaim: 
+          claimName: grafana-data-pvc
