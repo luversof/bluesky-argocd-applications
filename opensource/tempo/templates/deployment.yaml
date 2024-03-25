@@ -1,0 +1,53 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: tempo-deployment 
+  labels: 
+    app: tempo 
+spec: 
+  selector: 
+    matchLabels: 
+      app: tempo 
+  template: 
+    metadata: 
+      labels: 
+        app: tempo
+    spec: 
+      containers: 
+      - name: tempo
+        image: grafana/tempo
+        args: 
+        - -config.file=/conf/tempo.yaml 
+        ports: 
+        - containerPort: 3100
+          name: prom-metrics
+        - containerPort: 6831
+          name: jaeger-thrift-c
+          protocol: UDP
+        - containerPort: 6832
+          name: jaeger-thrift-b
+          protocol: UDP
+        - containerPort: 14268
+          name: jaeger-thrift-h
+        - containerPort: 14250
+          name: jaeger-grpc
+        - containerPort: 9411
+          name: zipkin
+        - containerPort: 55680
+          name: otlp-legacy
+        - containerPort: 4317
+          name: otlp-grpc
+        - containerPort: 55681
+          name: otlp-http
+        - containerPort: 55678
+          name: opencensus
+        volumeMounts: 
+        - name: tempo-config
+          mountPath: /conf
+      volumes:
+      - name: tempo-config
+        configMap:
+          name: tempo-configmap
+          items:
+          - key: tempo.yaml
+            path: tempo.yaml

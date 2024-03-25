@@ -1,0 +1,52 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: opentelemetry-collector-deployment 
+  labels: 
+    app: opentelemetry-collector
+spec: 
+  selector: 
+    matchLabels: 
+      app: opentelemetry-collector
+  template: 
+    metadata: 
+      labels: 
+        app: opentelemetry-collector
+    spec: 
+#      securityContext: 
+#        runAsUser: 0 
+      containers: 
+      - name: opentelemetry-collector
+        image: otel/opentelemetry-collector:latest 
+        command:
+        - /otelcol
+        - --config=/conf/collector.yaml
+        ports: 
+        - name: jaeger-compact
+          containerPort: 6831
+          protocol: UDP
+        - name: jaeger-grpc
+          containerPort: 14250
+          protocol: TCP
+        - name: jaeger-thrift
+          containerPort: 14268
+          protocol: TCP
+        - name: otlp
+          containerPort: 4317
+          protocol: TCP
+        - name: otlp-http
+          containerPort: 4318
+          protocol: TCP
+        - name: zipkin
+          containerPort: 9411
+          protocol: TCP
+        volumeMounts: 
+        - name: opentelemetry-collector-config
+          mountPath: /conf
+      volumes:
+      - name: opentelemetry-collector-config
+        configMap:
+          name: opentelemetry-collector-configmap
+          items:
+          - key: collector.yaml
+            path: collector.yaml

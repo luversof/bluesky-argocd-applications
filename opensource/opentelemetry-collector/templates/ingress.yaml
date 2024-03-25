@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: opentelemetry-collector-ingress
+spec:
+  rules:
+  - host: opentelemetry-collector.bluesky.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: opentelemetry-collector-service
+            port:
+              number: 9411
