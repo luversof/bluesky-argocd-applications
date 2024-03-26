@@ -296,3 +296,26 @@ spec:
     automated:
       prune: false
       selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonarqube
+spec:
+  destination:
+    name: ''
+    namespace: opensource
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: opensource/sonarqube
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values-home.yaml
+  sources: []
+  project: opensource
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

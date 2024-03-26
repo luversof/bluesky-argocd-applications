@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube-deployment
+  labels:
+    app: sonarqube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
+  template:
+    metadata:
+      labels:
+        app: sonarqube
+    spec:
+      securityContext:
+        fsGroup: 0
+      initContainers:
+      - name: init-sysctl
+        image: sonarqube:10.4.1-community
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        resources:
+          {}
+        command: ["/bin/bash", "-e", "/tmp/scripts/init_sysctl.sh"]
+        volumeMounts:
+        - name: init-sysctl
+          mountPath: /tmp/scripts/
+      - name: init-fs
+        image: sonarqube:10.4.1-community
+        securityContext:
+          capabilities:
+            add:
+            - CHOWN
+            drop:
+            - ALL
+          privileged: false
+          runAsGroup: 0
+          runAsNonRoot: false
+          runAsUser: 0
+          seccompProfile:
+            type: RuntimeDefault
+        resources:
+          {}
+        command: ["sh",
+          "-e",
+          "/tmp/scripts/init_fs.sh"]
+        volumeMounts:
+        - name: init-fs
+          mountPath: /tmp/scripts/
+        - name: sonarqube-data
+          mountPath: /opt/sonarqube/data
+        - name: sonarqube-logs
+          mountPath: /opt/sonarqube/logs
+        - name: sonarqube-extensions
+          mountPath: /opt/sonarqube/extensions
+      containers:
+      - name: sonarqube
+        image: sonarqube:10.4.1-community
+        ports:
+        - containerPort: 9000
+        env:
+        - name: SONAR_JDBC_URL
+          value: "jdbc:sqlserver://mssql-service;databaseName=sonarqube;encrypt=false"
+        - name: SONAR_JDBC_USERNAME
+          value: "sa"
+        - name: SONAR_JDBC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mssql-sa-password
+              name: mssql-secret
+        resources:
+          requests:
+            cpu: 400m
+            memory: '1Gi'
+          limits:
+            cpu: 800m
+            memory: '2Gi'
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - name: sonarqube-data
+          mountPath: /opt/sonarqube/data
+        - name: sonarqube-logs
+          mountPath: /opt/sonarqube/logs
+        - name: sonarqube-extensions
+          mountPath: /opt/sonarqube/extensions
+      volumes:
+      - name: sonarqube-data
+        persistentVolumeClaim: 
+          claimName: sonarqube-data-pvc
+      - name: sonarqube-logs
+        persistentVolumeClaim: 
+          claimName: sonarqube-logs-pvc
+      - name: sonarqube-extensions
+        persistentVolumeClaim: 
+          claimName: sonarqube-extensions-pvc
+      - name: init-sysctl
+        configMap:
+          name: sonarqube-configmap
+          items:
+          - key: init_sysctl.sh
+            path: init_sysctl.sh
+      - name: init-fs
+        configMap:
+          name: sonarqube-configmap
+          items:
+          - key: init_fs.sh
+            path: init_fs.sh

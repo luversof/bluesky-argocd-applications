@@ -1,0 +1,10 @@
+PersistentVolume:
+  sonarqubeData:
+    hostPath:
+      path:
+  sonarqubeLogs:
+    hostPath:
+      path:
+  sonarqubeExtensions:
+    hostPath:
+      path:
