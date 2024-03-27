@@ -1,0 +1,3 @@
+PersistentVolume:
+  hostPath:
+    path: /mnt/c/data/prometheus-data

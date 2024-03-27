@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-configmap
+data:
+  prometheus.yaml: |
+    global: 
+      scrape_interval: 10s
+      scrape_timeout: 9s
+      evaluation_interval: 10s
+    scrape_configs:
+    - job_name: bluesky-spring-job
+      metrics_path: /actuator/prometheus
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_container_name]
+        action: keep
+        regex: spring
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        target_label: application
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: instance
