@@ -18,7 +18,7 @@ spec:
       - name: jenkins
         image: jenkins/jenkins:jdk21
 #        image: luversof/jenkins
-#        imagePullPolicy: Never 
+        imagePullPolicy: Always
         lifecycle:
           postStart:
             exec:
