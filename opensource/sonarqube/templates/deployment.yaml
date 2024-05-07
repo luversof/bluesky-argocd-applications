@@ -18,7 +18,7 @@ spec:
         fsGroup: 0
       initContainers:
       - name: init-sysctl
-        image: sonarqube:10.4.1-community
+        image: sonarqube:10.5.1-community
         securityContext:
           privileged: true
           runAsUser: 0
@@ -29,7 +29,7 @@ spec:
         - name: init-sysctl
           mountPath: /tmp/scripts/
       - name: init-fs
-        image: sonarqube:10.4.1-community
+        image: sonarqube:10.5.1-community
         securityContext:
           capabilities:
             add:
@@ -58,7 +58,7 @@ spec:
           mountPath: /opt/sonarqube/extensions
       containers:
       - name: sonarqube
-        image: sonarqube:10.4.1-community
+        image: sonarqube:10.5.1-community
         ports:
         - containerPort: 9000
         env:
