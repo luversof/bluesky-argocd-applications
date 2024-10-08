@@ -12,8 +12,8 @@ data:
         endpoint: tempo-service:4317
         tls:
           insecure: true
-      logging:
-        loglevel: info
+      debug:
+        verbosity: normal
       zipkin:
         endpoint: http://zipkin-service:9411/api/v2/spans
     service:
@@ -23,6 +23,6 @@ data:
           - zipkin
           processors: []
           exporters:
-          - logging
+          - debug
           - otlp
           - zipkin
