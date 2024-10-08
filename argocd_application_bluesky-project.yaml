@@ -1,6 +1,50 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: bluesky-cloud-netflix-eureka-server-1
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: bluesky-project_subchart
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - subchart/bluesky-cloud-netflix-eureka-server-1/values.yaml
+        - subchart_work/buildInfo-bluesky-cloud/values.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bluesky-cloud-netflix-eureka-server-2
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: bluesky-project_subchart
+    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - subchart/bluesky-cloud-netflix-eureka-server-2/values.yaml
+        - subchart_work/buildInfo-bluesky-cloud/values.yaml
+  sources: []
+  project: default
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: bluesky-cloud-admin-server
 spec:
   destination:
@@ -69,50 +113,6 @@ spec:
     automated:
       prune: false
       selfHeal: false
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: bluesky-cloud-netflix-eureka-server-1
-spec:
-  destination:
-    name: ''
-    namespace: default
-    server: 'https://kubernetes.default.svc'
-  source:
-    path: bluesky-project_subchart
-    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
-    targetRevision: develop
-    helm:
-      valueFiles:
-        - subchart/bluesky-cloud-netflix-eureka-server-1/values.yaml
-        - subchart_work/buildInfo-bluesky-cloud/values.yaml
-  sources: []
-  project: default
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: bluesky-cloud-netflix-eureka-server-2
-spec:
-  destination:
-    name: ''
-    namespace: default
-    server: 'https://kubernetes.default.svc'
-  source:
-    path: bluesky-project_subchart
-    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
-    targetRevision: develop
-    helm:
-      valueFiles:
-        - subchart/bluesky-cloud-netflix-eureka-server-2/values.yaml
-        - subchart_work/buildInfo-bluesky-cloud/values.yaml
-  sources: []
-  project: default
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
