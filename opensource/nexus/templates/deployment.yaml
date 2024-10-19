@@ -19,7 +19,7 @@ spec:
         image: busybox
         command: ["sh", "-c", "chown -R 200:200 /nexus-data"]
         volumeMounts:
-        - name: nexus-data-pvc
+        - name: nexus-data
           mountPath: /nexus-data
       containers:
       - name: nexus
