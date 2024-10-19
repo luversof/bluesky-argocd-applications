@@ -13,7 +13,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -36,7 +36,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -59,7 +59,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -82,7 +82,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -105,7 +105,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -128,7 +128,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -151,7 +151,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -174,7 +174,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -197,7 +197,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -220,7 +220,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -243,7 +243,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -266,7 +266,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -289,7 +289,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -312,7 +312,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:
@@ -335,7 +335,7 @@ spec:
     targetRevision: develop
     helm:
       valueFiles:
-        - values-work.yaml
+        - values-home.yaml
   sources: []
   project: opensource
   syncPolicy:

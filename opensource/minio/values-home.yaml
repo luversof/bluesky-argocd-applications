@@ -1,3 +1,3 @@
 PersistentVolume:
   hostPath:
-    path: /mnt/f/dev/data/minio-data
+    path: /mnt/d/dev/data/minio-data

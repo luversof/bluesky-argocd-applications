@@ -1,3 +1,3 @@
 PersistentVolume:
   hostPath:
-    path: /mnt/f/dev/data/redis-data
+    path: /mnt/d/dev/data/redis-data

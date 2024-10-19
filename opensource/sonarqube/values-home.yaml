@@ -1,10 +1,10 @@
 PersistentVolume:
   sonarqubeData:
     hostPath:
-      path: /mnt/f/dev/data/sonarqube-data
+      path: /mnt/d/dev/data/sonarqube-data
   sonarqubeLogs:
     hostPath:
-      path: /mnt/f/dev/data/sonarqube-logs
+      path: /mnt/d/dev/data/sonarqube-logs
   sonarqubeExtensions:
     hostPath:
-      path: /mnt/f/dev/data/sonarqube-extensions
+      path: /mnt/d/dev/data/sonarqube-extensions

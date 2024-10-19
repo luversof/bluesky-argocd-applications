@@ -1,3 +1,3 @@
 PersistentVolume:
   hostPath:
-    path: /mnt/f/dev/data/mariadb
+    path: /mnt/d/dev/data/mariadb
