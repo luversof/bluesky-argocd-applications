@@ -43,6 +43,10 @@ spec:
           mountPath: /var/opt/mssql/log
         - name: mssql-secrets
           mountPath: /var/opt/mssql/secrets
+        securityContext:
+          privileged: true
+#          allowPrivilegeEscalation: false
+          runAsUser: 0
       volumes:
       - name: mssql-data
         persistentVolumeClaim:
