@@ -14,7 +14,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-cloud-netflix-eureka-server-1/values.yaml
-        - subchart_work/buildInfo-bluesky-cloud/values.yaml
+        - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -38,7 +38,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-cloud-netflix-eureka-server-2/values.yaml
-        - subchart_work/buildInfo-bluesky-cloud/values.yaml
+        - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
 ---
@@ -58,7 +58,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-cloud-admin-server/values.yaml
-        - subchart_work/buildInfo-bluesky-cloud/values.yaml
+        - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -82,7 +82,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-cloud-config-server/values.yaml
-        - subchart_work/buildInfo-bluesky-cloud/values.yaml
+        - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -106,7 +106,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-cloud-gateway/values.yaml
-        - subchart_work/buildInfo-bluesky-cloud/values.yaml
+        - subchart_home/buildInfo-bluesky-cloud/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -130,7 +130,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-api-blog/values.yaml
-        - subchart_work/buildInfo-bluesky-project/values.yaml
+        - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -154,7 +154,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-api-board/values.yaml
-        - subchart_work/buildInfo-bluesky-project/values.yaml
+        - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -178,7 +178,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-api-bookkeeping/values.yaml
-        - subchart_work/buildInfo-bluesky-project/values.yaml
+        - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -202,7 +202,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-api-user/values.yaml
-        - subchart_work/buildInfo-bluesky-project/values.yaml
+        - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -226,7 +226,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-web-gate/values.yaml
-        - subchart_work/buildInfo-bluesky-project/values.yaml
+        - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -250,7 +250,7 @@ spec:
     helm:
       valueFiles:
         - subchart/bluesky-web-swagger-ui/values.yaml
-        - subchart_work/buildInfo-bluesky-project/values.yaml
+        - subchart_home/buildInfo-bluesky-project/values.yaml
   sources: []
   project: default
   syncPolicy:
