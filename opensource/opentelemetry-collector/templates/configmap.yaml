@@ -6,6 +6,7 @@ data:
   collector.yaml: |
     receivers:
       zipkin:
+        endpoint: 0.0.0.0:4317
     processors:
     exporters:
       otlp:
@@ -19,10 +20,6 @@ data:
     service:
       pipelines:
         traces:
-          receivers:
-          - zipkin
+          receivers: [zipkin]
           processors: []
-          exporters:
-          - debug
-          - otlp
-          - zipkin
+          exporters: [debug, otlp, zipkin]
