@@ -24,6 +24,6 @@ data:
     service:
       pipelines:
         traces:
-          receivers: [zipkin]
+          receivers: [otlp]
           processors: []
           exporters: [debug, otlp, zipkin]
