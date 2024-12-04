@@ -5,8 +5,12 @@ metadata:
 data:
   collector.yaml: |
     receivers:
-      zipkin:
-        endpoint: 0.0.0.0:4317
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
     processors:
     exporters:
       otlp:

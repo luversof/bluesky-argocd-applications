@@ -20,17 +20,18 @@ spec:
 #    port: 14268
 #    targetPort: 14268
 #    protocol: TCP
-#  - name: otlp
-#    port: 4317
-#    targetPort: 4317
+#  - name: zipkin
+#    port: 9411
+#    targetPort: 9411
 #    protocol: TCP
-#    appProtocol: grpc
-#  - name: otlp-http
-#    port: 4318
-#    targetPort: 4318
-#    protocol: TCP
-  - name: zipkin
-    port: 9411
-    targetPort: 9411
+  - name: otlp-grpc # Default endpoint for OpenTelemetry gRPC receiver.
+    port: 4317
+    targetPort: 4317
     protocol: TCP
+  - name: otlp-http # Default endpoint for OpenTelemetry HTTP receiver.
+    port: 4318
+    targetPort: 4318
+    protocol: TCP
+  - name: metrics # Default endpoint for querying metrics.
+    port: 8888
   type: LoadBalancer
