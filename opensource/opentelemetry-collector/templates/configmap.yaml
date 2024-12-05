@@ -30,4 +30,4 @@ data:
         logs:
           receivers: [otlp]
           processors: []
-          exporters: [otlp, zipkin]
+          exporters: [otlp]
