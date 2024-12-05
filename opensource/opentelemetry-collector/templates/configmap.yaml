@@ -14,7 +14,7 @@ data:
     processors:
     exporters:
       otlp:
-        endpoint: htp://tempo-service.opensource.svc.cluster.local:4317
+        endpoint: tempo-service.opensource.svc.cluster.local:4317
         tls:
           insecure: true
       debug:
