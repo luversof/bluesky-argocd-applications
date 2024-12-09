@@ -13,4 +13,4 @@ spec:
           service:
             name: opentelemetry-collector-service
             port:
-              number: 4317
+              number: 4318
