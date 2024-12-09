@@ -11,10 +11,8 @@ data:
             endpoint: ${env:MY_POD_IP}:4317
           http:
             endpoint: ${env:MY_POD_IP}:4318
-
     processors:
       batch:
-
     exporters:
       otlp:
         endpoint: tempo-service.opensource.svc.cluster.local:4317
@@ -24,12 +22,10 @@ data:
         verbosity: normal
       zipkin:
         endpoint: http://zipkin-service.opensource.svc.cluster.local:9411/api/v2/spans
-
     extensions:
       health_check:
       pprof:
       zpages:
-
     service:
       extensions: [health_Check, pprof, zpages]
       pipelines:
@@ -41,7 +37,6 @@ data:
           receivers: [otlp]
           processors: [batch]
           exporters: [debug]
-
     telemetry:
       metrics:
         address: ${env:MY_POD_IP}:8888
