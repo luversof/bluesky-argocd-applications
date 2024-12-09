@@ -20,7 +20,7 @@ spec:
         image: otel/opentelemetry-collector:latest 
         command:
         - /otelcol
-        - --config=/conf/collector.yaml
+        - --config=/conf/opentelemetry-collector.yaml
         resources:
           limits:
             cpu: 1
@@ -29,20 +29,38 @@ spec:
             cpu: 200m
             memory: 400Mi
         ports: 
-        - containerPort: 55679 # Default endpoint for ZPages.
-        - containerPort: 4317 # Default endpoint for OpenTelemetry receiver.
-        - containerPort: 14250 # Default endpoint for Jaeger gRPC receiver.
-        - containerPort: 14268 # Default endpoint for Jaeger HTTP receiver.
-        - containerPort: 9411 # Default endpoint for Zipkin receiver.
-        - containerPort: 8888  # Default endpoint for querying metrics.
+        - name: jaeger-compact
+          containerPort: 6831
+          protocol: UDP
+        - name: jaeger-grpc
+          containerPort: 14250
+          protocol: TCP
+        - name: jaeger-thrift
+          containerPort: 14268
+          protocol: TCP
+        - name: otlp
+          containerPort: 4317
+          protocol: TCP
+        - name: otlp-http
+          containerPort: 4318
+          protocol: TCP
+        - name: zipkin
+          containerPort: 9411
+          protocol: TCP
         env:
         - name: MY_POD_IP
           valueFrom:
             fieldRef:
               apiVersion: v1
               fieldPath: status.podIP
-        - name: GOMEMLIMIT
-          value: 1600MiB
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 13133
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 13133
         volumeMounts: 
         - name: opentelemetry-collector-config
           mountPath: /conf
@@ -51,5 +69,5 @@ spec:
         configMap:
           name: opentelemetry-collector-configmap
           items:
-          - key: collector.yaml
-            path: collector.yaml
+          - key: opentelemetry-collector.yaml
+            path: opentelemetry-collector.yaml
