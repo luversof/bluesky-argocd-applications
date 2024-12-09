@@ -31,7 +31,7 @@ data:
       zpages:
 
     service:
-      extensions: [health_Check, pprof, zpages]
+      extensions: [health_check, pprof, zpages]
       pipelines:
         traces:
           receivers: [otlp]
