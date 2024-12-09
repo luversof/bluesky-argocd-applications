@@ -28,6 +28,7 @@ spec:
     port: 4317
     targetPort: 4317
     protocol: TCP
+    appProtocol: grpc
   - name: otlp-http # Default endpoint for OpenTelemetry HTTP receiver.
     port: 4318
     targetPort: 4318

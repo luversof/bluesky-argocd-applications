@@ -41,6 +41,6 @@ data:
           receivers: [otlp]
           processors: [batch]
           exporters: [debug]
-      telemetry:
-        metrics:
-          address: ${env:MY_POD_IP}:8888
+#      telemetry:
+#        metrics:
+#          address: ${env:MY_POD_IP}:8888
