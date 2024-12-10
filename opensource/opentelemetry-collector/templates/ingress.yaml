@@ -14,3 +14,10 @@ spec:
             name: opentelemetry-collector-service
             port:
               number: 4318
+      - path: /debug
+        pathType: Prefix
+        backend:
+          service:
+            name: opentelemetry-collector-service
+            port:
+              number: 55679

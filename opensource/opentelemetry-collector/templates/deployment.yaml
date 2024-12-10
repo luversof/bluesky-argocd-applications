@@ -47,6 +47,9 @@ spec:
         - name: zipkin
           containerPort: 9411
           protocol: TCP
+        - name: zpages
+          containerPort: 55679
+          protocol: TCP
         env:
         - name: MY_POD_IP
           valueFrom:
