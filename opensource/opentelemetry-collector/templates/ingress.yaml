@@ -7,7 +7,7 @@ spec:
   - host: opentelemetry-collector.bluesky.local
     http:
       paths:
-      - path: /
+      - path: /v1
         pathType: Prefix
         backend:
           service:
