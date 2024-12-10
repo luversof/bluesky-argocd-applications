@@ -29,6 +29,7 @@ data:
       health_check:
       pprof:
       zpages:
+        endpoint: ${env:MY_POD_IP}:55679
 
     service:
       extensions: [health_check, pprof, zpages]
