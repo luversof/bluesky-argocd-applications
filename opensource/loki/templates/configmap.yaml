@@ -24,9 +24,9 @@ data:
     schema_config:
       configs:
       - from: 2020-10-24
-        store: boltdb-shipper
+        store: tsdb
         object_store: s3
-        schema: v11
+        schema: v13
         index:
           prefix: index_
           period: 24h
