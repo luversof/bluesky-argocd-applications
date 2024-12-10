@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki-deployment
+  labels:
+    app: loki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loki
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      containers:
+      - name: loki
+        image: loki
+        args: 
+        - "-config.file=/etc/loki/loki.yaml"
+        ports:
+        - name: loki
+          containerPort: 3100
+        volumeMounts:
+        - name: loki-config
+          mountPath: /etc/loki
+        - name: loki-data
+          mountPath: /data
+      volumes:
+      - name: loki-config
+        configMap:
+          name: loki-configmap
+          items:
+          - key: loki.yaml
+            path: loki.yaml
+      - name: loki-data
+        persistentVolumeClaim:
+          claimName: loki-data-pvc
