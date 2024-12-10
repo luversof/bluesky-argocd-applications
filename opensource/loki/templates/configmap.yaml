@@ -23,7 +23,7 @@ data:
           store: inmemory
     schema_config:
       configs:
-      - from: 2020-10-24
+      - from: 2024-12-11
         store: tsdb
         object_store: s3
         schema: v13
