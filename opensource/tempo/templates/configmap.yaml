@@ -6,14 +6,7 @@ data:
   tempo.yaml: |
     server:
       http_listen_port: 3100
-    distributor:
-      receivers:
-        otlp:
-          protocols:
-            grpc:
-              endpoint: ${env:MY_POD_IP}:4317
-            http:
-              endpoint: ${env:MY_POD_IP}:4318
+
     storage:
       trace:
         backend: s3
