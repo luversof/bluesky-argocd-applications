@@ -21,7 +21,7 @@ data:
         tls:
           insecure: true
       otlphttp:
-        endpoint: http://tempo-service.opensource.svc.cluster.local:4318
+        endpoint: http://loki-service.opensource.svc.cluster.local:3100/otlp
       debug:
         verbosity: normal
       zipkin:
