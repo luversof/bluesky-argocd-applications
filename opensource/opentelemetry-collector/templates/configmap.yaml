@@ -17,9 +17,11 @@ data:
 
     exporters:
       otlp:
-        endpoint: tempo-service.opensource.svc.cluster.local:4318
+        endpoint: tempo-service.opensource.svc.cluster.local:4317
         tls:
           insecure: true
+      otlphttp:
+        endpoint: http://tempo-service.opensource.svc.cluster.local:4318
       debug:
         verbosity: normal
       zipkin:
@@ -41,7 +43,7 @@ data:
         logs:
           receivers: [otlp]
           processors: [batch]
-          exporters: [debug, otlp]
+          exporters: [debug, otlphttp]
 #      telemetry:
 #        metrics:
 #          address: ${env:MY_POD_IP}:8888
