@@ -33,6 +33,12 @@ spec:
     port: 4318
     targetPort: 4318
     protocol: TCP
+  - name: ppro # pprof extension
+    port: 1777
+    protocol: TCP
+  - name: healthcheck # healthcheck extension
+    port: 13133
+    protocol: TCP
   - name: zpages # zpages extension
     port: 55679
     protocol: TCP

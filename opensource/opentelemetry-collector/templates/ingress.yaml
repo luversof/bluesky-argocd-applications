@@ -7,6 +7,13 @@ spec:
   - host: opentelemetry-collector.bluesky.local
     http:
       paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: opentelemetry-collector-service
+            port:
+              number: 13133
       - path: /v1
         pathType: Prefix
         backend:
@@ -21,3 +28,10 @@ spec:
             name: opentelemetry-collector-service
             port:
               number: 55679
+      - path: /debug/pprof
+        pathType: Prefix
+        backend:
+          service:
+            name: opentelemetry-collector-service
+            port:
+              number: 1777
