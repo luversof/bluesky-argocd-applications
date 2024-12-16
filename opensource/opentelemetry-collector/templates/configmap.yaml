@@ -24,8 +24,6 @@ data:
         endpoint: http://loki-service.opensource.svc.cluster.local:3100/otlp
       debug:
         verbosity: normal
-      zipkin:
-        endpoint: http://zipkin-service.opensource.svc.cluster.local:9411/api/v2/spans
 
     extensions:
       health_check:
@@ -41,7 +39,7 @@ data:
         traces:
           receivers: [otlp]
           processors: [batch]
-          exporters: [debug, otlp, zipkin]
+          exporters: [debug, otlp]
         logs:
           receivers: [otlp]
           processors: [batch]
