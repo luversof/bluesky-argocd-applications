@@ -6,6 +6,8 @@ kind: Ingress
 metadata:
   name: {{ $name }}-ingress
 spec:
+  tls:
+  - secretName: tls-secret
   rules:
   {{- range .Values.ingress.hosts }}
   - host: {{ .host | quote }}
