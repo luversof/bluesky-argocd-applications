@@ -4,7 +4,6 @@ metadata:
   name: jenkins
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -27,7 +26,6 @@ metadata:
   name: mariadb
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -50,7 +48,6 @@ metadata:
   name: mssql
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -73,7 +70,6 @@ metadata:
   name: minio
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -96,7 +92,6 @@ metadata:
   name: mongo
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -119,7 +114,6 @@ metadata:
   name: nexus
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -142,7 +136,6 @@ metadata:
   name: postgres
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -165,7 +158,6 @@ metadata:
   name: rabbitmq
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -188,7 +180,6 @@ metadata:
   name: redis
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -211,7 +202,6 @@ metadata:
   name: tempo
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -234,7 +224,6 @@ spec:
 #  name: zipkin
 #spec:
 #  destination:
-#    name: ''
 #    namespace: opensource
 #    server: 'https://kubernetes.default.svc'
 #  source:
@@ -257,7 +246,6 @@ metadata:
   name: opentelemetry-collector
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -280,7 +268,6 @@ metadata:
   name: grafana
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -303,7 +290,6 @@ metadata:
   name: sonarqube
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -326,7 +312,6 @@ metadata:
   name: prometheus
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -349,7 +334,6 @@ metadata:
   name: loki
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
@@ -372,7 +356,6 @@ metadata:
   name: hoppscotch
 spec:
   destination:
-    name: ''
     namespace: opensource
     server: 'https://kubernetes.default.svc'
   source:
