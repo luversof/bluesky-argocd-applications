@@ -63,14 +63,18 @@ spec:
         - containerPort: 9000
         env:
         - name: SONAR_JDBC_URL
-          value: "jdbc:sqlserver://mssql-service;databaseName=sonarqube;encrypt=false"
+          value: "jdbc:postgresql://postgres-service.opensource:5432/sonarqube"
         - name: SONAR_JDBC_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-user
           value: "sa"
         - name: SONAR_JDBC_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: mssql-sa-password
-              name: mssql-secret
+              name: postgres-secret
+              key: postgres-password
         resources:
           requests:
             cpu: 400m
