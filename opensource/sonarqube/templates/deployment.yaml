@@ -69,7 +69,6 @@ spec:
             secretKeyRef:
               name: postgres-secret
               key: postgres-user
-          value: "sa"
         - name: SONAR_JDBC_PASSWORD
           valueFrom:
             secretKeyRef:
