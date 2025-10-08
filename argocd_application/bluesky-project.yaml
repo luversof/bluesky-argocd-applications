@@ -4,7 +4,7 @@ metadata:
   name: bluesky-cloud-netflix-eureka-server-1
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -28,7 +28,7 @@ metadata:
   name: bluesky-cloud-netflix-eureka-server-2
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -48,7 +48,7 @@ metadata:
   name: bluesky-cloud-admin-server
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -72,7 +72,7 @@ metadata:
   name: bluesky-cloud-config-server
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -96,7 +96,7 @@ metadata:
   name: bluesky-cloud-gateway
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -120,7 +120,7 @@ metadata:
   name: bluesky-api-blog
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -144,7 +144,7 @@ metadata:
   name: bluesky-api-board
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -168,7 +168,7 @@ metadata:
   name: bluesky-api-bookkeeping
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -192,7 +192,7 @@ metadata:
   name: bluesky-api-stock
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -216,7 +216,7 @@ metadata:
   name: bluesky-api-user
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -240,7 +240,7 @@ metadata:
   name: bluesky-web-gate
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
@@ -264,7 +264,7 @@ metadata:
   name: bluesky-web-swagger-ui
 spec:
   destination:
-    name: ''
+    name: 'in-cluster'
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
