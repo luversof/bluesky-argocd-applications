@@ -1,0 +1,14 @@
+bluesky-project:
+  nameOverride: bluesky-api-stock
+  image:
+    artifactId: bluesky-api-stock
+  service:
+    port: 30134
+    nodePort: 30134
+  ingress:
+    enabled: true
+    hosts:
+    - host: stock.api.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
