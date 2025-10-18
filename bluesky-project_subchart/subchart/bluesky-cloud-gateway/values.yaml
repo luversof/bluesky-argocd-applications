@@ -16,3 +16,43 @@ bluesky-project:
       paths:
       - path: /
         pathType: Prefix
+    - host: board.api.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: bookkeeping.api.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: stock.api.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: user.api.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: admin.cloud.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: config.cloud.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: eureka1.cloud.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: eureka2.cloud.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: gate.web.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+    - host: swagger.web.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
