@@ -12,3 +12,7 @@ bluesky-project:
       paths:
       - path: /
         pathType: Prefix
+    - host: blog.api.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
