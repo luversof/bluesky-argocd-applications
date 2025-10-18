@@ -6,7 +6,7 @@ bluesky-project:
     port: 30134
     nodePort: 30134
   ingress:
-    enabled: true
+#    enabled: true
     hosts:
     - host: stock.api.bluesky.local
       paths:

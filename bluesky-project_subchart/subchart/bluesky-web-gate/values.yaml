@@ -6,7 +6,7 @@ bluesky-project:
     port: 30122
     nodePort: 30122
   ingress:
-    enabled: true
+#    enabled: true
     hosts:
     - host: gate.web.bluesky.local
       paths:

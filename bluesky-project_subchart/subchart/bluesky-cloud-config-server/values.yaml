@@ -7,7 +7,7 @@ bluesky-project:
     port: 30101
     nodePort: 30101
   ingress:
-    enabled: true
+#    enabled: true
     hosts:
     - host: config.cloud.bluesky.local
       paths:

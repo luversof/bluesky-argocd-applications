@@ -6,7 +6,7 @@ bluesky-project:
     port: 30130
     nodePort: 30130
   ingress:
-    enabled: true
+#    enabled: true
     hosts:
     - host: bookkeeping.api.bluesky.local
       paths:

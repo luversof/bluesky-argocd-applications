@@ -6,7 +6,7 @@ bluesky-project:
     port: 30100
     nodePort: 30100
   ingress:
-    enabled: true
+#    enabled: true
     hosts:
     - host: eureka1.cloud.bluesky.local
       paths:
