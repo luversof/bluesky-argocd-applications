@@ -12,3 +12,5 @@ bluesky-project:
       paths:
       - path: /
         pathType: Prefix
+  autoscaling:
+    enabled: true

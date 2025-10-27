@@ -3,7 +3,6 @@ kind: Service
 metadata:
   labels:
     app: {{ include "bluesky-project.name" . }}
-    spring-boot: 'true'
   name: {{ include "bluesky-project.name" . }}-service
 spec:
   ports:

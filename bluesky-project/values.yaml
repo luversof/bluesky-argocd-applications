@@ -1,7 +1,9 @@
 
-replicaCount: 1
+
 
 springProfilesActive: k8sdev
+
+namespace: default
 
 image:
   host:
@@ -36,10 +38,12 @@ readinessProbe:
 ingress:
   enabled: false
 
+replicaCount: 1
+
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 1
   targetCPUUtilizationPercentage: 80
   
 resources: {}
