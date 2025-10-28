@@ -35,6 +35,10 @@ readinessProbe:
   periodSeconds: 10
   failureThreshold: 5
   
+resources:
+  requests:
+    cpu: 20m
+  
 ingress:
   enabled: false
 
@@ -45,5 +49,3 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 1
   targetCPUUtilizationPercentage: 80
-  
-resources: {}
