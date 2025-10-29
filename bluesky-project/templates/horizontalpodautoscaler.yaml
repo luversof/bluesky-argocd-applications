@@ -13,5 +13,6 @@ spec:
     name: {{ include "bluesky-project.name" . }}-deployment
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
-  targetCPUUtilizationPercentage: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+  metrics:
+	{{- toYaml .Values.autoscaling.metrics | nindent 4 }}
 {{- end }}
