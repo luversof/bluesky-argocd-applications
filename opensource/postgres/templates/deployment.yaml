@@ -32,7 +32,7 @@ spec:
               name: postgres-secret
         volumeMounts:
         - name: postgres-volume
-          mountPath: /var/lib/postgresql/data
+          mountPath: /var/lib/postgresql/18/docker
       volumes:
       - name: postgres-volume
         persistentVolumeClaim:
