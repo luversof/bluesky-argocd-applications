@@ -56,3 +56,7 @@ bluesky-project:
       paths:
       - path: /
         pathType: Prefix
+    - host: user.web.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
