@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: jenkins/jenkins:jdk21
-#        image: luversof/jenkins
+        image: jenkins/jenkins:jdk25
         imagePullPolicy: Always
         lifecycle:
           postStart:
