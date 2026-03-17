@@ -27,7 +27,7 @@ spec:
               mc mb myseaweedfs/tempo || true
       containers:
         - name: tempo
-          image: grafana/tempo
+          image: grafana/tempo:2.10.2
           args:
             - -target=all
             - -config.file=/conf/tempo.yaml

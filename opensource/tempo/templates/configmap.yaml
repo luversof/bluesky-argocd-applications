@@ -4,8 +4,10 @@ metadata:
   name: tempo-configmap
 data:
   tempo.yaml: |
+    stream_over_http_enabled: true
     server:
       http_listen_port: 3100
+      log_level: info
 
     distributor:
       receivers:
@@ -13,18 +15,21 @@ data:
           protocols:
             http:
             grpc:
-        jaeger:
-          protocols:
-            thrift_http:
-            grpc:
-            thrift_binary:
-            thrift_compact:
-        zipkin:
-        opencensus:
+
+    ingester:
+      max_block_duration: 5m
+
+    compactor:
+      compaction:
+        block_retention: 48h
 
     storage:
       trace:
         backend: s3
+        wal:
+          path: /var/tempo/wal
+        local:
+          path: /var/tempo/blocks
         s3:
           bucket: tempo
           endpoint: seaweedfs-service:8333
