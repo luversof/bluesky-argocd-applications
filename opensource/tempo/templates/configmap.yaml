@@ -12,7 +12,9 @@ data:
         backend: s3
         s3:
           bucket: tempo
-          endpoint: minio-service:9000
-          access_key: minio_access_key
-          secret_key: minio_secret_key
+          endpoint: seaweedfs-service:8333
+          access_key: seaweedfs_access_key
+          secret_key: seaweedfs_secret_key
+          insecure: true
+          forcepathstyle: true
           insecure: true
