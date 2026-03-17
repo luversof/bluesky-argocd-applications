@@ -6,11 +6,11 @@ spec:
   selector:
     app: seaweedfs
   ports:
-  - protocol: TCP
-    name: seaweedfs-s3-port
-    port: 8333
-    targetPort: 8333
-  - protocol: TCP
-    name: seaweedfs-master-port
-    port: 9333
-    targetPort: 9333
+    - protocol: TCP
+      name: seaweedfs-s3-port
+      port: 8333
+      targetPort: 8333
+    - protocol: TCP
+      name: seaweedfs-master-port
+      port: 9333
+      targetPort: 9333

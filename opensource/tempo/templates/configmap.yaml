@@ -17,4 +17,3 @@ data:
           secret_key: seaweedfs_secret_key
           insecure: true
           forcepathstyle: true
-          insecure: true
