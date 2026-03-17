@@ -29,6 +29,7 @@ spec:
         - name: tempo
           image: grafana/tempo
           args:
+            - -target=all
             - -config.file=/conf/tempo.yaml
           ports:
             - containerPort: 3100
