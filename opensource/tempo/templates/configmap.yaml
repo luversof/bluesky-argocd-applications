@@ -7,6 +7,21 @@ data:
     server:
       http_listen_port: 3100
 
+    distributor:
+      receivers:
+        otlp:
+          protocols:
+            http:
+            grpc:
+        jaeger:
+          protocols:
+            thrift_http:
+            grpc:
+            thrift_binary:
+            thrift_compact:
+        zipkin:
+        opencensus:
+
     storage:
       trace:
         backend: s3
