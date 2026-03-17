@@ -12,8 +12,20 @@ spec:
     metadata: 
       labels: 
         app: tempo
-    spec: 
-      containers: 
+    spec:
+      initContainers:
+      - name: create-bucket
+        image: minio/mc:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # Wait for seaweedfs to be ready
+          sleep 5
+          mc alias set myseaweedfs http://seaweedfs-service:8333 seaweedfs_access_key seaweedfs_secret_key
+          # Ignore error if bucket already exists
+          mc mb myseaweedfs/tempo || true
+      containers:
       - name: tempo
         image: grafana/tempo
         args: 
