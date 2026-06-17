@@ -1,3 +1,23 @@
+# 현재(기본) PostgreSQL 인스턴스(18.4) 배포 여부.
+# true  → postgres-deployment/-service/-pvc/-pv/-secret/-ingress 렌더 (기존 동작)
+# false → 현재 인스턴스는 렌더하지 않음. 추가 버전 전용 Application에서 사용.
+deployCurrent: true
+
 PersistentVolume:
   hostPath:
-    path: 
+    path:
+
+# 향후 추가되는 PostgreSQL 메이저 버전을 현재(18.4) 인스턴스와 분리해 배포하기 위한 목록.
+# 비워두면 추가 인스턴스가 없다. 항목을 추가하면 버전마다
+# postgres-<major>-deployment / -service / -pvc / -pv / -secret 가 독립적으로 생성된다.
+# hostPath 는 반드시 다른 경로로 지정할 것(데이터 분리).
+extraVersions: []
+# 예시:
+# extraVersions:
+#   - major: "19"
+#     image: postgres:19.0
+#     storage: 2Gi
+#     hostPath: /mnt/c/data/postgres-19
+#     # user: root        # (기본값 root)
+#     # password: root    # (기본값 root)
+#     # mountPath: /var/lib/postgresql   # (기본값) 이미지가 버전별 하위 디렉터리를 관리

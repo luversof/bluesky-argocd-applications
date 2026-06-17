@@ -1,3 +1,4 @@
+{{- if .Values.deployCurrent }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,10 +14,11 @@ spec:
     metadata:
       labels:
         app: postgres
+        postgres-major: "18"
     spec:
       containers:
       - name: postgres
-        image: postgres:latest
+        image: postgres:18.4
         ports:
         - containerPort: 5432
         env:
@@ -37,3 +39,4 @@ spec:
       - name: postgres-volume
         persistentVolumeClaim:
           claimName: postgres-pvc
+{{- end }}

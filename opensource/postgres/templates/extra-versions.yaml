@@ -1,0 +1,117 @@
+{{- /*
+  현재(18.4) 인스턴스와 분리해 배포하는 "추가 메이저 버전" 인스턴스들.
+  values 의 extraVersions 목록을 순회하며 버전마다 독립된
+  Secret / Deployment / Service / PVC / PV 를 생성한다. 목록이 비어 있으면 아무것도 만들지 않는다.
+
+  같은 차트를 가리키는 별도 ArgoCD Application에서 deployCurrent=false 로 두면
+  현재 인스턴스 없이 이 추가 버전만 배포된다(리소스 이름이 postgres-<major>-* 로 분리되어 충돌 없음).
+
+  필드:
+    major     (필수) 메이저 버전 문자열. 예: "19"
+    image     (필수) 컨테이너 이미지. 예: postgres:19.0
+    hostPath  (필수) 현재 인스턴스와 다른 호스트 경로. 예: /mnt/c/data/postgres-19
+    storage   (선택) 볼륨 크기. 기본 2Gi
+    user      (선택) DB 사용자. 기본 root
+    password  (선택) DB 비밀번호. 기본 root
+    mountPath (선택) 데이터 마운트 경로. 기본 /var/lib/postgresql
+              (postgres 18+ 이미지는 /var/lib/postgresql/<major>/docker 하위에 데이터를 두므로
+               부모 디렉터리를 마운트해 이미지가 관리하게 둔다)
+*/}}
+{{- range .Values.extraVersions }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-{{ .major }}-secret
+  labels:
+    app: postgres-{{ .major }}
+data:
+  postgres-user: {{ .user | default "root" | b64enc }}
+  postgres-password: {{ .password | default "root" | b64enc }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-{{ .major }}-pv
+  labels:
+    app: postgres-{{ .major }}-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: {{ .storage | default "2Gi" }}
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: {{ .hostPath }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-{{ .major }}-pvc
+spec:
+  volumeName: postgres-{{ .major }}-pv
+  storageClassName: ""
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .storage | default "2Gi" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-{{ .major }}-deployment
+  labels:
+    app: postgres-{{ .major }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: postgres-{{ .major }}
+  template:
+    metadata:
+      labels:
+        app: postgres-{{ .major }}
+        postgres-major: "{{ .major }}"
+    spec:
+      containers:
+      - name: postgres
+        image: {{ .image }}
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              key: postgres-user
+              name: postgres-{{ .major }}-secret
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: postgres-password
+              name: postgres-{{ .major }}-secret
+        volumeMounts:
+        - name: postgres-volume
+          mountPath: {{ .mountPath | default "/var/lib/postgresql" }}
+      volumes:
+      - name: postgres-volume
+        persistentVolumeClaim:
+          claimName: postgres-{{ .major }}-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-{{ .major }}-service
+  labels:
+    app: postgres-{{ .major }}
+spec:
+  selector:
+    app: postgres-{{ .major }}
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  type: ClusterIP
+{{- end }}

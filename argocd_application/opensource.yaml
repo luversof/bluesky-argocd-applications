@@ -173,6 +173,35 @@ spec:
     automated:
       prune: false
       selfHeal: false
+#--- 추가 PostgreSQL 메이저 버전 등록 예시 (필요 시 주석 해제 후 사용) ---
+# 같은 opensource/postgres 차트를 재사용하되, deployCurrent=false 로 현재(18.4)는 렌더하지 않고
+# extraVersions 의 버전만 배포한다. 리소스 이름이 postgres-19-* 로 분리되어 기존 postgres 앱과 충돌하지 않는다.
+#apiVersion: argoproj.io/v1alpha1
+#kind: Application
+#metadata:
+#  name: postgres-19
+#spec:
+#  destination:
+#    namespace: opensource
+#    server: 'https://kubernetes.default.svc'
+#  source:
+#    path: opensource/postgres
+#    repoURL: 'https://github.com/luversof/bluesky-argocd-applications.git'
+#    targetRevision: develop
+#    helm:
+#      valuesObject:
+#        deployCurrent: false
+#        extraVersions:
+#          - major: "19"
+#            image: postgres:19.0
+#            storage: 2Gi
+#            hostPath: /mnt/c/data/postgres-19   # home 환경은 /mnt/d/dev/data/postgres-19
+#  sources: []
+#  project: opensource
+#  syncPolicy:
+#    automated:
+#      prune: false
+#      selfHeal: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
