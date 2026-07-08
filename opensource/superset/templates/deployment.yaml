@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superset-deployment
+  labels:
+    app: superset
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: superset
+  template:
+    metadata:
+      labels:
+        app: superset
+    spec:
+      # grafana 와 동일하게 root 로 실행 → hostPath 볼륨 쓰기 권한 문제 없이 단순화.
+      securityContext:
+        runAsUser: 0
+      initContainers:
+      # quickstart 의 초기화 3종: 스키마 마이그레이션 → 관리자 생성 → 역할/권한. 모두 idempotent.
+      - name: superset-init
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ["sh", "-c"]
+        args:
+        - |
+          superset db upgrade
+          superset fab create-admin \
+            --username "$ADMIN_USERNAME" \
+            --firstname "$ADMIN_FIRSTNAME" \
+            --lastname "$ADMIN_LASTNAME" \
+            --email "$ADMIN_EMAIL" \
+            --password "$ADMIN_PASSWORD" || true
+          superset init
+        env:
+        - name: SUPERSET_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: superset-secret
+              key: superset-secret-key
+        - name: ADMIN_USERNAME
+          value: "{{ .Values.admin.username }}"
+        - name: ADMIN_PASSWORD
+          value: "{{ .Values.admin.password }}"
+        - name: ADMIN_FIRSTNAME
+          value: "{{ .Values.admin.firstName }}"
+        - name: ADMIN_LASTNAME
+          value: "{{ .Values.admin.lastName }}"
+        - name: ADMIN_EMAIL
+          value: "{{ .Values.admin.email }}"
+        volumeMounts:
+        - name: superset-home
+          mountPath: /app/superset_home
+      containers:
+      # Superset 웹 (gunicorn)
+      - name: superset
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command:
+        - gunicorn
+        - --bind
+        - "0.0.0.0:8088"
+        - --workers
+        - "4"
+        - --worker-class
+        - gthread
+        - --threads
+        - "20"
+        - --timeout
+        - "120"
+        - --limit-request-line
+        - "0"
+        - --limit-request-field_size
+        - "0"
+        - "superset.app:create_app()"
+        ports:
+        - containerPort: 8088
+        env:
+        - name: SUPERSET_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: superset-secret
+              key: superset-secret-key
+        resources:
+          requests:
+            cpu: 200m
+            memory: '1Gi'
+          limits:
+            cpu: 800m
+            memory: '2Gi'
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8088
+          initialDelaySeconds: 30
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8088
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        volumeMounts:
+        - name: superset-home
+          mountPath: /app/superset_home
+      volumes:
+      - name: superset-home
+        persistentVolumeClaim:
+          claimName: superset-home-pvc

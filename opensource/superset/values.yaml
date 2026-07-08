@@ -1,0 +1,21 @@
+# Apache Superset (Apache-2.0). SQL Lab 로 임의 SQL 탐색 + 대시보드 공유.
+# 메타데이터는 컨테이너 내부 SQLite 를 쓰고, 아래 PersistentVolume(hostPath)에 저장해 재시작해도 유지한다.
+# (Python 설정 파일 없이 quickstart 그대로 구동. 외부 postgres/redis 미사용)
+
+image:
+  repository: apache/superset
+  tag: "4.1.1"
+
+# 초기 관리자 계정 (최초 부팅 시 생성, 이후 로그인 후 비밀번호 변경 권장)
+admin:
+  username: admin
+  password: admin
+  firstName: Superset
+  lastName: Admin
+  email: admin@bluesky.local
+
+# SQLite DB + 업로드 파일이 저장되는 superset home 디렉터리를 담을 볼륨.
+# 환경별 실제 hostPath 는 values-work.yaml / values-home.yaml 에서 지정한다.
+PersistentVolume:
+  hostPath:
+    path:
