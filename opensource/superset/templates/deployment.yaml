@@ -74,6 +74,11 @@ spec:
             echo ">> driver install failed — Superset will still start, but those DBs won't connect"
           fi
           {{- end }}
+          {{- if .Values.defaultLocale }}
+          # UI 기본 언어 설정 (Superset 은 config 로만 받으므로 superset_config.py 생성)
+          printf 'BABEL_DEFAULT_LOCALE = "%s"\nLANGUAGES = {"%s": {"flag": "kr", "name": "Korean"}, "en": {"flag": "us", "name": "English"}}\n' "{{ .Values.defaultLocale }}" "{{ .Values.defaultLocale }}" > /app/pythonpath/superset_config.py
+          echo ">> default locale set to {{ .Values.defaultLocale }}"
+          {{- end }}
           exec gunicorn \
             --bind 0.0.0.0:8088 \
             --workers 4 \
