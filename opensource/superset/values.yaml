@@ -6,6 +6,18 @@ image:
   repository: apache/superset
   tag: "4.1.1"
 
+# 4.1.0 부터 기본 이미지에서 빠진 데이터소스용 DB 드라이버를 파드 기동 시 pip 로 설치한다.
+# 모두 시스템 라이브러리가 필요 없는 순수/휠 드라이버라 이미지 빌드 없이 붙는다.
+#   pymysql → MySQL      : mysql+pymysql://user:pass@host:3306/db
+#   pymssql → MS SQL     : mssql+pymssql://user:pass@host:1433/db
+# 다른 DB가 필요하면 여기에 패키지명을 추가하면 된다.
+extraDrivers:
+  - pymysql
+  - pymssql
+
+# 사내 pip 미러가 필요하면 지정(예: https://repo.g.ncsoft.net/.../simple). 비우면 공개 PyPI 사용.
+pipIndexUrl: ""
+
 # 초기 관리자 계정 (최초 부팅 시 생성, 이후 로그인 후 비밀번호 변경 권장)
 admin:
   username: admin

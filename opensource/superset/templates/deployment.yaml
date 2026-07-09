@@ -55,23 +55,25 @@ spec:
       # Superset 웹 (gunicorn)
       - name: superset
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command:
-        - gunicorn
-        - --bind
-        - "0.0.0.0:8088"
-        - --workers
-        - "4"
-        - --worker-class
-        - gthread
-        - --threads
-        - "20"
-        - --timeout
-        - "120"
-        - --limit-request-line
-        - "0"
-        - --limit-request-field_size
-        - "0"
-        - "superset.app:create_app()"
+        # 데이터소스 드라이버(pymysql/pymssql 등)를 설치한 뒤 gunicorn 기동.
+        # 설치 실패해도 Superset 본체는 뜨도록 하고, 드라이버 없는 DB만 연결이 안 된다.
+        command: ["sh", "-c"]
+        args:
+        - |
+          {{- if .Values.extraDrivers }}
+          echo ">> installing DB drivers: {{ join " " .Values.extraDrivers }}"
+          pip install --no-cache-dir {{ if .Values.pipIndexUrl }}--index-url {{ .Values.pipIndexUrl }} {{ end }}{{ join " " .Values.extraDrivers }} \
+            || echo ">> driver install failed — Superset will still start, but those DBs won't connect"
+          {{- end }}
+          exec gunicorn \
+            --bind 0.0.0.0:8088 \
+            --workers 4 \
+            --worker-class gthread \
+            --threads 20 \
+            --timeout 120 \
+            --limit-request-line 0 \
+            --limit-request-field_size 0 \
+            "superset.app:create_app()"
         ports:
         - containerPort: 8088
         env:
