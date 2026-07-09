@@ -62,8 +62,17 @@ spec:
         - |
           {{- if .Values.extraDrivers }}
           echo ">> installing DB drivers: {{ join " " .Values.extraDrivers }}"
-          pip install --no-cache-dir {{ if .Values.pipIndexUrl }}--index-url {{ .Values.pipIndexUrl }} {{ end }}{{ join " " .Values.extraDrivers }} \
-            || echo ">> driver install failed — Superset will still start, but those DBs won't connect"
+          if pip install --no-cache-dir {{ if .Values.pipIndexUrl }}--index-url {{ .Values.pipIndexUrl }} {{ end }}{{ join " " .Values.extraDrivers }}; then
+            {{- if .Values.registerPymysqlAsMySQLdb }}
+            # pymysql 을 MySQLdb 로도 등록 → 모든 python 프로세스(워커 포함) 기동 시 자동 적용.
+            # Superset MySQLEngineSpec.get_datatype 의 `import MySQLdb` 하드코딩 대응.
+            SITE=$(python -c 'import site; print(site.getsitepackages()[0])')
+            printf 'import pymysql; pymysql.install_as_MySQLdb()\n' > "$SITE/zzz_pymysql_as_mysqldb.pth"
+            echo ">> registered pymysql as MySQLdb"
+            {{- end }}
+          else
+            echo ">> driver install failed — Superset will still start, but those DBs won't connect"
+          fi
           {{- end }}
           exec gunicorn \
             --bind 0.0.0.0:8088 \
