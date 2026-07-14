@@ -5,21 +5,21 @@ bluesky-project:
   service:
     port: 30122
     nodePort: 30122
-  # PoE 게임 데이터 (tools/poe-extract 산출물, git 미관리) — PVC 에 두고 로드한다.
-  # 데이터 갱신: 로컬에서 파이프라인 실행 후 `kubectl cp ~/.poe-gamedata/. <pod>:/root/.poe-gamedata/`
+  # PoE 게임 데이터 (tools/poe-extract 산출물, git 미관리).
+  # 이 클러스터는 이 PC 의 Rancher Desktop(WSL2)이므로 윈도우 작업 폴더(~/.poe-gamedata)를
+  # hostPath 로 직접 마운트한다 — 로컬에서 파이프라인을 돌리면 즉시 반영(복사 불필요, JSON 은 재시작 필요).
+  # 다른 클러스터로 옮기면 이 방식은 무효 — 그때는 PVC(persistence.enabled) + kubectl cp 로 전환할 것.
   env:
     - name: POE_DATA_DIR
       value: /root/.poe-gamedata
-  persistence:
-    enabled: true
-    size: 1Gi
   volumeMounts:
     - name: poe-gamedata
       mountPath: /root/.poe-gamedata
   volumes:
     - name: poe-gamedata
-      persistentVolumeClaim:
-        claimName: bluesky-web-gate-data
+      hostPath:
+        path: /mnt/c/Users/bluesky/.poe-gamedata
+        type: Directory
   ingress:
 #    enabled: true
     hosts:
