@@ -5,6 +5,21 @@ bluesky-project:
   service:
     port: 30122
     nodePort: 30122
+  # PoE 게임 데이터 (tools/poe-extract 산출물, git 미관리) — PVC 에 두고 로드한다.
+  # 데이터 갱신: 로컬에서 파이프라인 실행 후 `kubectl cp ~/.poe-gamedata/. <pod>:/root/.poe-gamedata/`
+  env:
+    - name: POE_DATA_DIR
+      value: /root/.poe-gamedata
+  persistence:
+    enabled: true
+    size: 1Gi
+  volumeMounts:
+    - name: poe-gamedata
+      mountPath: /root/.poe-gamedata
+  volumes:
+    - name: poe-gamedata
+      persistentVolumeClaim:
+        claimName: bluesky-web-gate-data
   ingress:
 #    enabled: true
     hosts:

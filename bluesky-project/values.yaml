@@ -38,6 +38,19 @@ readinessProbe:
 resources:
   requests:
     cpu: 20m
+
+# 컨테이너 env / 볼륨 passthrough (필요한 앱만 서브차트 values 에서 지정)
+env: []
+volumeMounts: []
+volumes: []
+
+# 앱 데이터용 PVC (<앱이름>-data 로 생성됨)
+persistence:
+  enabled: false
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  size: 1Gi
   
 ingress:
   enabled: false
