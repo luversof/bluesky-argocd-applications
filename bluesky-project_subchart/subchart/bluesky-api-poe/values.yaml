@@ -1,0 +1,36 @@
+bluesky-project:
+  nameOverride: bluesky-api-poe
+  image:
+    artifactId: bluesky-api-poe
+  service:
+    port: 30135
+    nodePort: 30135
+  ingress:
+#    enabled: true
+    hosts:
+    - host: poe.api.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
+
+  # PoE 게임 데이터 + PoB 소스 볼륨.
+  # 이미지(jib)에는 LuaJIT + tools/poe-pob(worker.lua/calc.lua) 가 /usr/local/app 기준으로 포함돼야 하고,
+  # 재생성되는 게임 데이터(passive-tree.json/gems/uniques/mod-pool/icons)와 pob-src 는 PVC 에 둔다(최초 1회 seed 또는 extract 잡 실행).
+  # 엔진은 cwd(/usr/local/app) 기준 tools/poe-pob/*.lua 를 찾고, poe.data-dir/poe.pob.src-dir 는 아래 env 로 PVC 경로를 가리킨다.
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+  env:
+    - name: POE_DATADIR
+      value: /usr/local/app/.poe-gamedata
+    - name: POE_POB_SRCDIR
+      value: /usr/local/app/.poe-gamedata/work/pob-src
+  volumeMounts:
+    - name: poe-data
+      mountPath: /usr/local/app/.poe-gamedata
+  volumes:
+    - name: poe-data
+      persistentVolumeClaim:
+        claimName: bluesky-api-poe-data
