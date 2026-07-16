@@ -13,24 +13,25 @@ bluesky-project:
       - path: /
         pathType: Prefix
 
-  # PoE 게임 데이터 + PoB 소스 볼륨.
-  # 이미지(jib)에는 LuaJIT + tools/poe-pob(worker.lua/calc.lua) 가 /usr/local/app 기준으로 포함돼야 하고,
-  # 재생성되는 게임 데이터(passive-tree.json/gems/uniques/mod-pool/icons)와 pob-src 는 PVC 에 둔다(최초 1회 seed 또는 extract 잡 실행).
-  # 엔진은 cwd(/usr/local/app) 기준 tools/poe-pob/*.lua 를 찾고, poe.data-dir/poe.pob.src-dir 는 아래 env 로 PVC 경로를 가리킨다.
+  # 엔진 자산 배치:
+  #  - 이미지(base=docker/base/Dockerfile): LuaJIT + lua-utf8 + PoB 소스(/opt/pob-src), jib 가 tools/poe-pob 를 /usr/local/app/tools/poe-pob 에 baking
+  #  - 게임 데이터(passive-tree.json/gems/uniques/mod-pool/icons)는 호스트(Windows)의 ~/.poe-gamedata 를 그대로 사용.
+  # Rancher Desktop(WSL2) 이라 Windows 드라이브는 노드에서 /mnt/c 로 보이므로 hostPath 로 직접 마운트한다(동적 PVC 는 빈 볼륨이라 데이터가 안 보임).
+  # 엔진은 cwd(/usr/local/app) 기준 tools/poe-pob/*.lua, POE_POB_SRC_DIR(baked) 로 PoB 소스, POE_DATA_DIR(hostPath) 로 게임 데이터를 찾는다.
   persistence:
-    enabled: true
-    accessModes:
-      - ReadWriteOnce
-    size: 5Gi
+    enabled: false
+  # @Value("${poe.data-dir}")/("${poe.pob.src-dir}") 의 env relaxed binding 은 대시를 '_' 로 치환(제거 아님)해서 찾으므로
+  # 반드시 POE_DATA_DIR / POE_POB_SRC_DIR (게이트 POE_DATA_DIR 컨벤션과 동일). 대시 제거형(POE_DATADIR)은 @Value 에 안 붙는다.
   env:
-    - name: POE_DATADIR
+    - name: POE_DATA_DIR
       value: /usr/local/app/.poe-gamedata
-    - name: POE_POB_SRCDIR
-      value: /usr/local/app/.poe-gamedata/work/pob-src
+    - name: POE_POB_SRC_DIR
+      value: /opt/pob-src
   volumeMounts:
     - name: poe-data
       mountPath: /usr/local/app/.poe-gamedata
   volumes:
     - name: poe-data
-      persistentVolumeClaim:
-        claimName: bluesky-api-poe-data
+      hostPath:
+        path: /mnt/c/Users/bluesky/.poe-gamedata
+        type: Directory
