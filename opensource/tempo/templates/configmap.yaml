@@ -13,15 +13,22 @@ data:
       receivers:
         otlp:
           protocols:
+            # tempo 2.7 부터 내장 OTel Collector 리시버의 기본 바인드 주소가
+            # 0.0.0.0 -> localhost 로 바뀌었다. endpoint 를 명시하지 않으면 컨테이너
+            # 내부에서만 listen 하게 되어 collector 가 connection refused 를 받는다.
             http:
+              endpoint: 0.0.0.0:4318
             grpc:
+              endpoint: 0.0.0.0:4317
 
-    ingester:
-      max_block_duration: 5m
-
-    compactor:
-      compaction:
-        block_retention: 48h
+    # tempo 3.0 에서 ingester 모듈이 제거되어 ingester / compactor 블록은 더 이상 존재하지 않는다.
+    # (남겨두면 "field ingester not found in type app.Config" 로 기동 실패)
+    # 블록 보관 기간은 backend_scheduler 아래로 이동했다.
+    backend_scheduler:
+      provider:
+        compaction:
+          compaction:
+            block_retention: 48h
 
     storage:
       trace:

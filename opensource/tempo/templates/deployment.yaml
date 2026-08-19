@@ -14,20 +14,28 @@ spec:
         app: tempo
     spec:
       initContainers:
+        # seaweedfs 는 버킷을 자동 생성하지 않으므로 기동 전에 만들어 준다.
+        # minio 는 라이선스 이슈로 사용하지 않기 때문에 mc 대신 표준 AWS CLI(S3 API)를 쓴다.
         - name: create-bucket
-          image: minio/mc:latest
+          image: amazon/aws-cli:latest
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: seaweedfs_access_key
+            - name: AWS_SECRET_ACCESS_KEY
+              value: seaweedfs_secret_key
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
           command:
             - /bin/sh
             - -c
             - |
               # Wait for seaweedfs to be ready
               sleep 5
-              mc alias set myseaweedfs http://seaweedfs-service:8333 seaweedfs_access_key seaweedfs_secret_key
               # Ignore error if bucket already exists
-              mc mb myseaweedfs/tempo || true
+              aws --endpoint-url http://seaweedfs-service:8333 s3 mb s3://tempo || true
       containers:
         - name: tempo
-          image: grafana/tempo:2.10.2
+          image: grafana/tempo:latest
           args:
             - -target=all
             - -config.file=/conf/tempo.yaml
