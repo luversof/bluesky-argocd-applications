@@ -11,12 +11,14 @@ data:
       path_prefix: /loki
       replication_factor: 1
       storage:
+        # minio 는 라이선스 이슈로 사용하지 않고 seaweedfs 를 S3 저장소로 사용한다.
+        # (tempo 도 동일한 seaweedfs-service:8333 / seaweedfs_* 자격증명을 사용)
         s3:
-          endpoint: minio-service:9000
+          endpoint: seaweedfs-service:8333
           s3forcepathstyle: true
           bucketnames: loki
-          access_key_id: minio_access_key
-          secret_access_key: minio_secret_key
+          access_key_id: seaweedfs_access_key
+          secret_access_key: seaweedfs_secret_key
           insecure: true
       ring:
         kvstore:
