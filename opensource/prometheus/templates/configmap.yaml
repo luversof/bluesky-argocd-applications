@@ -9,6 +9,11 @@ data:
       scrape_timeout: 9s
       evaluation_interval: 10s
     scrape_configs:
+    # prometheus 자기 자신. 이게 없으면 prometheus_* 내부 메트릭이 수집되지 않아
+    # "Prometheus 2.0 Stats" 류 대시보드가 통째로 빈다(job 변수도 후보가 0개가 됨).
+    - job_name: prometheus
+      static_configs:
+      - targets: ['localhost:9090']
     - job_name: bluesky-spring-job
       metrics_path: /actuator/prometheus
       kubernetes_sd_configs:
