@@ -22,6 +22,11 @@ spec:
         args:
         - "--web.enable-lifecycle"
         - "--config.file=/etc/prometheus/prometheus.yaml"
+        # 보관 기간과 용량 상한을 함께 지정한다(둘 중 먼저 걸리는 쪽이 적용).
+        # 주의: retention.size 만 주면 기본값 15d 가 사라져 기간 제한이 없어지므로
+        # retention.time 도 반드시 함께 명시해야 한다.
+        - "--storage.tsdb.retention.time=15d"
+        - "--storage.tsdb.retention.size=5GB"
         ports:
         - name: prometheus
           containerPort: 9090
