@@ -19,6 +19,20 @@ data:
     - job_name: grafana
       static_configs:
       - targets: ['grafana-service.opensource:3000']
+    # ArgoCD 메트릭. grafana.com 14584 대시보드가 argocd_* 를 namespace 라벨로 필터하므로
+    # namespace=argocd 라벨을 직접 붙여준다.
+    #   :8082 application-controller - argocd_app_info / app_sync_total / cluster_*
+    #   :8083 server                 - argocd_info / kubectl_*
+    #   :8084 repo-server            - argocd_git_request_* / redis_request_*
+    - job_name: argocd
+      static_configs:
+      - targets:
+        - 'argocd-metrics.argocd:8082'
+        - 'argocd-server-metrics.argocd:8083'
+        - 'argocd-repo-server.argocd:8084'
+      relabel_configs:
+      - target_label: namespace
+        replacement: argocd
     - job_name: bluesky-spring-job
       metrics_path: /actuator/prometheus
       kubernetes_sd_configs:
