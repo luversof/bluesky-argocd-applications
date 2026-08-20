@@ -14,6 +14,11 @@ data:
     - job_name: prometheus
       static_configs:
       - targets: ['localhost:9090']
+    # grafana 자체 메트릭. "Grafana metrics" 대시보드가 up{job="grafana"} 를 쓰므로
+    # job 이름이 반드시 grafana 여야 한다.
+    - job_name: grafana
+      static_configs:
+      - targets: ['grafana-service.opensource:3000']
     - job_name: bluesky-spring-job
       metrics_path: /actuator/prometheus
       kubernetes_sd_configs:
