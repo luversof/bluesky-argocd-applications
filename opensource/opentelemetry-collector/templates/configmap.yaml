@@ -4,6 +4,12 @@ metadata:
   name: opentelemetry-collector-configmap
 data:
   opentelemetry-collector.yaml: |
+    # 이 collector 는 노드마다 하나씩 뜨는 DaemonSet 이며 두 가지 방식으로 데이터를 모은다.
+    #  1) otlp    : 애플리케이션이 직접 보내오는(push) 트레이스를 받는다.
+    #               트레이스는 앱 내부에서만 알 수 있는 정보라 앱이 보내는 수밖에 없다.
+    #  2) filelog : 노드의 컨테이너 stdout 로그 파일을 직접 읽는다(pull).
+    #               앱 수정이 필요 없고, 앱이 기동에 실패해 OTLP 를 못 보내는 구간의
+    #               로그나 인프라 파드(mariadb, coredns 등) 로그까지 남는다.
     receivers:
       otlp:
         protocols:
@@ -12,8 +18,43 @@ data:
           http:
             endpoint: ${env:MY_POD_IP}:4318
 
+      filelog:
+        include:
+          - /var/log/pods/*/*/*.log
+        exclude:
+          # 자기 자신의 로그를 다시 수집해 무한 루프가 생기는 것을 막는다.
+          - /var/log/pods/*_opentelemetry-collector-*_*/*/*.log
+        start_at: end
+        include_file_path: true
+        operators:
+          # container 오퍼레이터가 컨테이너 런타임 로그 포맷(docker/CRI)을 파싱하고
+          # 파일 경로에서 k8s.pod.name / k8s.namespace.name / k8s.container.name 을 뽑아준다.
+          - id: container-parser
+            type: container
+
     processors:
-      batch:
+      batch: {}
+      k8sattributes:
+        auth_type: serviceAccount
+        passthrough: false
+        extract:
+          metadata:
+            - k8s.namespace.name
+            - k8s.pod.name
+            - k8s.container.name
+            - k8s.deployment.name
+          labels:
+            # 파드의 app 라벨을 service.name 으로 승격시킨다.
+            # loki 는 OTLP 수집 시 service.name 을 service_name 라벨로 만든다.
+            - tag_name: service.name
+              key: app
+              from: pod
+        pod_association:
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.name
+              - from: resource_attribute
+                name: k8s.namespace.name
 
     exporters:
       otlp:
@@ -41,9 +82,6 @@ data:
           processors: [batch]
           exporters: [debug, otlp]
         logs:
-          receivers: [otlp]
-          processors: [batch]
-          exporters: [debug, otlphttp]
-#      telemetry:
-#        metrics:
-#          address: ${env:MY_POD_IP}:8888
+          receivers: [filelog]
+          processors: [k8sattributes, batch]
+          exporters: [otlphttp]

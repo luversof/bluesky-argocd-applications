@@ -1,0 +1,95 @@
+# 노드의 컨테이너 로그 파일을 읽어야 하므로 Deployment 가 아니라 DaemonSet 으로 띄운다.
+# (Deployment 로 두면 파드가 배치된 노드의 로그만 보이고 나머지 노드는 누락된다)
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: opentelemetry-collector-daemonset
+  labels:
+    app: opentelemetry-collector
+spec:
+  selector:
+    matchLabels:
+      app: opentelemetry-collector
+  template:
+    metadata:
+      labels:
+        app: opentelemetry-collector
+    spec:
+      # 호스트의 로그 파일을 읽기 위해 root 로 실행한다.
+      securityContext:
+        runAsUser: 0
+      containers:
+      - name: opentelemetry-collector
+        # filelog 리시버와 k8sattributes 프로세서는 core 이미지에 없고 contrib 에만 있다.
+        image: otel/opentelemetry-collector-contrib:latest
+        command:
+        - /otelcol-contrib
+        - --config=/conf/opentelemetry-collector.yaml
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 200m
+            memory: 400Mi
+        ports:
+        - name: otlp
+          containerPort: 4317
+          protocol: TCP
+        - name: otlp-http
+          containerPort: 4318
+          protocol: TCP
+        - name: pprof
+          containerPort: 1777
+          protocol: TCP
+        - name: healthcheck
+          containerPort: 13133
+          protocol: TCP
+        - name: zpages
+          containerPort: 55679
+          protocol: TCP
+        env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 13133
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 13133
+        volumeMounts:
+        - name: opentelemetry-collector-config
+          mountPath: /conf
+        - name: varlogpods
+          mountPath: /var/log/pods
+          readOnly: true
+        # /var/log/pods 아래 파일은 컨테이너 런타임 디렉토리로의 심볼릭 링크라
+        # 실제 파일을 읽으려면 런타임 디렉토리도 함께 마운트해야 한다.
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        # 어디까지 읽었는지 기록해 재시작 시 중복/유실을 줄인다.
+        - name: filelogcheckpoint
+          mountPath: /var/lib/otelcol
+      volumes:
+      - name: opentelemetry-collector-config
+        configMap:
+          name: opentelemetry-collector-configmap
+          items:
+          - key: opentelemetry-collector.yaml
+            path: opentelemetry-collector.yaml
+      - name: varlogpods
+        hostPath:
+          path: /var/log/pods
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: filelogcheckpoint
+        hostPath:
+          path: /var/lib/otelcol
+          type: DirectoryOrCreate
