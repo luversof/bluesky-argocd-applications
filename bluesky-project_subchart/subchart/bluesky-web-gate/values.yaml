@@ -10,6 +10,10 @@ bluesky-project:
   # hostPath 로 직접 마운트한다 — 로컬에서 파이프라인을 돌리면 즉시 반영(복사 불필요, JSON 은 재시작 필요).
   # 다른 클러스터로 옮기면 이 방식은 무효 — 그때는 PVC(persistence.enabled) + kubectl cp 로 전환할 것.
   env:
+    # 일자 집계 기준 타임존 고정. 화면 첫 렌더는 브라우저 timeZone 이 아직 없어
+    # 서버 기본 타임존으로 날짜를 묶는다. 컨테이너 기본(UTC)이면 하루 밀린다.
+    - name: TZ
+      value: Asia/Seoul
     - name: POE_DATA_DIR
       value: /root/.poe-gamedata
   volumeMounts:

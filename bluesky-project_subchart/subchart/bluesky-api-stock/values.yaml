@@ -1,5 +1,12 @@
 bluesky-project:
   nameOverride: bluesky-api-stock
+  # 일자 집계 기준 타임존 고정.
+  # 손익 시계열은 거래 시각(Instant)을 '거래일'로 묶어 계산하는데, 그 기준이 JVM 기본
+  # 타임존이다. 컨테이너 기본은 UTC 라 KST 오전 거래가 전날로 묶여 차트와 연도 경계가
+  # 하루 밀린다. 화면 첫 렌더는 timeZone 파라미터 없이 오므로 서버 기본값이 그대로 쓰인다.
+  env:
+    - name: TZ
+      value: Asia/Seoul
   image:
     artifactId: bluesky-api-stock
   service:
