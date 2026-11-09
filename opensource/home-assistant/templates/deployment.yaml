@@ -16,29 +16,7 @@ spec:
       labels:
         app: home-assistant
     spec:
-      initContainers:
-      # ingress 뒤에서 400 에러를 막기 위해 최초 1회만 reverse proxy 설정을 넣는다 (기존 파일은 건드리지 않음)
-      - name: init-config
-        image: busybox
-        command:
-        - sh
-        - -c
-        - |
-          if [ ! -f /config/configuration.yaml ]; then
-            cat > /config/configuration.yaml <<'EOF'
-          default_config:
-
-          http:
-            use_x_forwarded_for: true
-            trusted_proxies:
-              - 10.0.0.0/8
-              - 172.16.0.0/12
-              - 192.168.0.0/16
-          EOF
-          fi
-        volumeMounts:
-        - name: home-assistant-config
-          mountPath: /config
+      # reverse proxy 설정은 HA 2026.11부터 UI(Settings > System > Network)에서만 한다
       containers:
       - name: home-assistant
         image: ghcr.io/home-assistant/home-assistant:stable
