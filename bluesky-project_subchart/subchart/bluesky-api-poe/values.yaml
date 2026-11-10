@@ -38,6 +38,7 @@ bluesky-project:
           cp /usr/lib/libluajit-5.1.so.2 /usr/lib/libgcc_s.so.1 /rt/lib/
           cp /usr/lib/lua/5.1/lua-utf8.so /rt/lua/
           rsync -a --delete --exclude=.git /host-data/work/pob-src/ /rt/pob-src/
+          rsync -a --delete --exclude=.git /host-data/poe2/work/pob2-src/ /rt/pob2-src/
           echo "poe runtime ready: $(/rt/bin/luajit -v 2>&1)"
       volumeMounts:
         - name: poe-rt
@@ -52,6 +53,11 @@ bluesky-project:
       value: /usr/local/app/.poe-gamedata
     - name: POE_POB_SRC_DIR
       value: /opt/poe-rt/pob-src
+    # poe2.* 는 poe.data-dir 을 따르지 않고 기본값이 ${user.home}(/root) 기준이라 따로 지정
+    - name: POE2_DATA_DIR
+      value: /usr/local/app/.poe-gamedata/poe2
+    - name: POE2_POB_SRC_DIR
+      value: /opt/poe-rt/pob2-src
     - name: POE_POB_LUAJIT_PATH
       value: /opt/poe-rt/bin/luajit
     - name: LD_LIBRARY_PATH
