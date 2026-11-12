@@ -19,7 +19,7 @@ bluesky-project:
   #  - initContainer 는 앱 컨테이너와 파일시스템이 분리되어 "설치"가 불가 → 필요한 파일만 emptyDir 로 복사
   #  - luajit 실행에 필요한 파일 4개: luajit / libluajit-5.1.so.2 / libgcc_s.so.1 / lua-utf8.so
   #    (lua-utf8 native 모듈은 PoB 필수. temurin 이미지엔 libgcc 도 없어 함께 복사)
-  #  - PoB 소스는 hostPath(.poe-gamedata/work/pob-src)에 있지만 /mnt/c(9p)는 소파일 다량 읽기가 느려
+  #  - PoB 소스는 hostPath(.poe-gamedata/poe1/work/pob-src)에 있지만 /mnt/c(9p)는 소파일 다량 읽기가 느려
   #    워커 기동이 수십 초씩 걸리므로 emptyDir 로 1회 복사해 로컬 디스크 속도로 읽게 한다(.git 제외)
   # 게임 데이터(JSON/icons)는 Windows 호스트의 ~/.poe-gamedata 를 hostPath 로 직접 마운트(Rancher Desktop/WSL2 = /mnt/c).
   persistence:
@@ -37,7 +37,7 @@ bluesky-project:
           cp /usr/bin/luajit /rt/bin/
           cp /usr/lib/libluajit-5.1.so.2 /usr/lib/libgcc_s.so.1 /rt/lib/
           cp /usr/lib/lua/5.1/lua-utf8.so /rt/lua/
-          rsync -a --delete --exclude=.git /host-data/work/pob-src/ /rt/pob-src/
+          rsync -a --delete --exclude=.git /host-data/poe1/work/pob-src/ /rt/pob-src/
           rsync -a --delete --exclude=.git /host-data/poe2/work/pob2-src/ /rt/pob2-src/
           echo "poe runtime ready: $(/rt/bin/luajit -v 2>&1)"
       volumeMounts:
@@ -50,7 +50,7 @@ bluesky-project:
   # LD_LIBRARY_PATH/LUA_CPATH 는 JVM(ProcessBuilder) 이 luajit 자식 프로세스에 그대로 상속시킨다.
   env:
     - name: POE_DATA_DIR
-      value: /usr/local/app/.poe-gamedata
+      value: /usr/local/app/.poe-gamedata/poe1
     - name: POE_POB_SRC_DIR
       value: /opt/poe-rt/pob-src
     # poe2.* 는 poe.data-dir 을 따르지 않고 기본값이 ${user.home}(/root) 기준이라 따로 지정
