@@ -1,3 +1,6 @@
 PersistentVolume:
   hostPath:
     path: /mnt/d/dev/data/mongo
+backup:
+  hostPath:
+    path: /mnt/d/dev/data/backup/mongo

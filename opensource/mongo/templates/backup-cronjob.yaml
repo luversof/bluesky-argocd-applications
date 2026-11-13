@@ -1,0 +1,37 @@
+# local-path 데이터는 Rancher Desktop 리셋 시 사라지므로 매일 D:\로 mongodump 백업하고 최신 7개만 남긴다
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongo-backup
+spec:
+  schedule: "0 18 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: backup
+            image: mongo
+            command:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+              f=/backup/mongo-$(date +%Y-%m-%d-%H%M).archive.gz
+              mongodump --uri mongodb://mongo-service:27017 --archive="$f.tmp" --gzip
+              mv "$f.tmp" "$f"
+              cd /backup && ls -1t mongo-*.archive.gz | tail -n +8 | xargs -r rm -f
+              ls -l /backup
+            volumeMounts:
+            - name: backup
+              mountPath: /backup
+          volumes:
+          - name: backup
+            hostPath:
+              path: {{ .Values.backup.hostPath.path }}
+              type: DirectoryOrCreate
