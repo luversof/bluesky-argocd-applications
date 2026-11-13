@@ -17,10 +17,12 @@ spec:
       initContainers:
       - name: volume-mount-hack
         image: busybox
-        command: ["sh", "-c", "chown -R 200:200 /nexus-data"]
+        command: ["sh", "-c", "chown -R 200:200 /nexus-data /nexus-backup"]
         volumeMounts:
         - name: nexus-data
           mountPath: /nexus-data
+        - name: nexus-backup
+          mountPath: /nexus-backup
       containers:
       - name: nexus
         image: sonatype/nexus3:latest
@@ -40,7 +42,15 @@ spec:
         volumeMounts:
         - name: nexus-data
           mountPath: /nexus-data
+        # H2 백업 작업(Admin - Backup H2 Database)의 저장 위치. local-path가 사라져도 설정을 복원할 수 있게 D:\에 둔다
+        - name: nexus-backup
+          mountPath: /nexus-backup
       volumes:
+      # 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다
       - name: nexus-data
         persistentVolumeClaim:
-          claimName: nexus-data-pvc
+          claimName: nexus-data-local-pvc
+      - name: nexus-backup
+        hostPath:
+          path: {{ .Values.backup.hostPath.path }}
+          type: DirectoryOrCreate
