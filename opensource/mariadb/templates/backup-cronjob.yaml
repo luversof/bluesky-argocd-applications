@@ -24,12 +24,12 @@ spec:
                   key: mariadb-root-password
                   name: mariadb-secret
             command:
-            - sh
+            - bash
             - -c
             - |
-              set -e
+              set -euo pipefail
               f=/backup/mariadb-$(date +%Y-%m-%d-%H%M).sql.gz
-              mariadb-dump -h mariadb-service -uroot --all-databases --single-transaction --routines --events --triggers | gzip > "$f.tmp"
+              mariadb-dump -h mariadb-service -uroot --skip-ssl --all-databases --single-transaction --routines --events --triggers | gzip > "$f.tmp"
               mv "$f.tmp" "$f"
               cd /backup && ls -1t mariadb-*.sql.gz | tail -n +8 | xargs -r rm -f
               ls -l /backup

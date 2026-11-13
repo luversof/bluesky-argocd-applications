@@ -30,10 +30,10 @@ spec:
                   key: postgres-password
                   name: postgres-secret
             command:
-            - sh
+            - bash
             - -c
             - |
-              set -e
+              set -euo pipefail
               f=/backup/postgres-$(date +%Y-%m-%d-%H%M).sql.gz
               pg_dumpall -h postgres-service | gzip > "$f.tmp"
               mv "$f.tmp" "$f"
