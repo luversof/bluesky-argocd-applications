@@ -18,7 +18,7 @@ spec:
           - name: backup
             image: mariadb
             env:
-            - name: MARIADB_PWD
+            - name: MYSQL_PWD
               valueFrom:
                 secretKeyRef:
                   key: mariadb-root-password
