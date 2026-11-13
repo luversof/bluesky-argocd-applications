@@ -5,7 +5,10 @@ metadata:
   labels:
     app: mssql
 spec:
-  replicas: 0
+  replicas: 1
+  # 같은 데이터 파일을 두 인스턴스가 동시에 열지 않게 한다 (RollingUpdate 때 9p 파일 잠금으로 기동 실패를 겪음)
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mssql
@@ -43,7 +46,7 @@ spec:
           mountPath: /var/opt/mssql/log
         - name: mssql-secrets
           mountPath: /var/opt/mssql/secrets
-        # BACKUP DATABASE는 서버 프로세스가 직접 파일을 쓰므로 D:\ 백업 경로를 서버에 마운트한다 (mssql-backup CronJob)
+        # BACKUP DATABASE 출력 위치. SQL Server는 9p(D:\)에 백업 파일을 쓰지 못해(DiskChangeFileSize 실패) local-path에 쓰고 mssql-backup CronJob이 D:\로 옮긴다
         - name: mssql-backup
           mountPath: /var/opt/mssql/backup
         securityContext:
@@ -51,16 +54,16 @@ spec:
 #          allowPrivilegeEscalation: false
           runAsUser: 0
       volumes:
+      # 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 data와 log는 VM 내부 local-path에 둔다
       - name: mssql-data
         persistentVolumeClaim:
-          claimName: mssql-data-pvc
+          claimName: mssql-data-local-pvc
       - name: mssql-log
         persistentVolumeClaim:
-          claimName: mssql-log-pvc
+          claimName: mssql-log-local-pvc
       - name: mssql-secrets
         persistentVolumeClaim:
           claimName: mssql-secrets-pvc
       - name: mssql-backup
-        hostPath:
-          path: {{ .Values.backup.hostPath.path }}
-          type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: mssql-backup-staging-local-pvc

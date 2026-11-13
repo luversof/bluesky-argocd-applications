@@ -1,4 +1,5 @@
-# local-path 데이터는 Rancher Desktop 리셋 시 사라지므로 매일 사용자 DB를 D:\로 BACKUP DATABASE 하고 DB마다 최신 7개만 남긴다
+# local-path 데이터는 Rancher Desktop 리셋 시 사라지므로 매일 사용자 DB를 BACKUP DATABASE 하고 D:\로 옮겨 DB마다 최신 7개만 남긴다
+# 서버는 9p에 백업 파일을 쓰지 못하므로 staging PVC(local-path, 서버의 /var/opt/mssql/backup)에 쓰게 하고 여기서 옮긴다
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -35,13 +36,19 @@ spec:
               for d in $(q "SELECT name FROM sys.databases WHERE database_id > 4 AND state_desc = 'ONLINE'"); do
                 q "BACKUP DATABASE [$d] TO DISK = N'/var/opt/mssql/backup/$d-$ts.bak' WITH INIT, CHECKSUM, COMPRESSION"
                 q "RESTORE VERIFYONLY FROM DISK = N'/var/opt/mssql/backup/$d-$ts.bak' WITH CHECKSUM"
+                cp "/staging/$d-$ts.bak" "/backup/$d-$ts.bak.tmp" && mv "/backup/$d-$ts.bak.tmp" "/backup/$d-$ts.bak" && rm -f "/staging/$d-$ts.bak"
                 (cd /backup && ls -1t "$d"-*.bak | tail -n +8 | xargs -r rm -f)
               done
               ls -l /backup
             volumeMounts:
             - name: backup
               mountPath: /backup
+            - name: staging
+              mountPath: /staging
           volumes:
+          - name: staging
+            persistentVolumeClaim:
+              claimName: mssql-backup-staging-local-pvc
           - name: backup
             hostPath:
               path: {{ .Values.backup.hostPath.path }}

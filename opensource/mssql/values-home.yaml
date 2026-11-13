@@ -1,10 +1,4 @@
 PersistentVolume:
-  data:
-    hostPath:
-      path: /mnt/d/dev/data/mssql-data
-  log:
-    hostPath:
-      path: /mnt/d/dev/data/mssql-log
   secrets:
     hostPath:
       path: /mnt/d/dev/data/mssql-secrets
