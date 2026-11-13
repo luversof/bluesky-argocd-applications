@@ -1,0 +1,14 @@
+bluesky-project:
+  nameOverride: bluesky-web-dynamiccrud
+  image:
+    artifactId: bluesky-web-dynamiccrud
+  service:
+    port: 30123
+    nodePort: 30123
+  ingress:
+#    enabled: true
+    hosts:
+    - host: dynamiccrud.web.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
