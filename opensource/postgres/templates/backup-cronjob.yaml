@@ -1,0 +1,50 @@
+{{- if .Values.deployCurrent }}
+# local-path 데이터는 Rancher Desktop 리셋 시 사라지므로 매일 D:\로 pg_dumpall 백업하고 최신 7개만 남긴다
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+spec:
+  schedule: "0 18 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: backup
+            image: postgres:18.4
+            env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  key: postgres-user
+                  name: postgres-secret
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgres-password
+                  name: postgres-secret
+            command:
+            - sh
+            - -c
+            - |
+              set -e
+              f=/backup/postgres-$(date +%Y-%m-%d-%H%M).sql.gz
+              pg_dumpall -h postgres-service | gzip > "$f.tmp"
+              mv "$f.tmp" "$f"
+              cd /backup && ls -1t postgres-*.sql.gz | tail -n +8 | xargs -r rm -f
+              ls -l /backup
+            volumeMounts:
+            - name: backup
+              mountPath: /backup
+          volumes:
+          - name: backup
+            hostPath:
+              path: {{ .Values.backup.hostPath.path }}
+              type: DirectoryOrCreate
+{{- end }}

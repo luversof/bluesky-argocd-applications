@@ -21,3 +21,6 @@ extraVersions: []
 #     # user: root        # (기본값 root)
 #     # password: root    # (기본값 root)
 #     # mountPath: /var/lib/postgresql   # (기본값) 이미지가 버전별 하위 디렉터리를 관리
+backup:
+  hostPath:
+    path:
