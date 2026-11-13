@@ -5,7 +5,10 @@ metadata:
   labels:
     app: mongo
 spec:
-  replicas: 0
+  replicas: 1
+  # 같은 데이터 디렉터리에 두 인스턴스가 동시에 뜨지 않게 한다
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mongo
@@ -25,6 +28,7 @@ spec:
         securityContext:
           allowPrivilegeEscalation: false
       volumes:
+      # 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다. 백업은 mongo-backup CronJob
       - name: mongo-volume
         persistentVolumeClaim:
-          claimName: mongo-pvc
+          claimName: mongo-local-pvc
