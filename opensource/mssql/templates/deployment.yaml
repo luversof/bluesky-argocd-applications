@@ -43,6 +43,9 @@ spec:
           mountPath: /var/opt/mssql/log
         - name: mssql-secrets
           mountPath: /var/opt/mssql/secrets
+        # BACKUP DATABASE는 서버 프로세스가 직접 파일을 쓰므로 D:\ 백업 경로를 서버에 마운트한다 (mssql-backup CronJob)
+        - name: mssql-backup
+          mountPath: /var/opt/mssql/backup
         securityContext:
           privileged: true
 #          allowPrivilegeEscalation: false
@@ -57,3 +60,7 @@ spec:
       - name: mssql-secrets
         persistentVolumeClaim:
           claimName: mssql-secrets-pvc
+      - name: mssql-backup
+        hostPath:
+          path: {{ .Values.backup.hostPath.path }}
+          type: DirectoryOrCreate

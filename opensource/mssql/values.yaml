@@ -8,3 +8,6 @@ PersistentVolume:
   secrets:
     hostPath:
       path:
+backup:
+  hostPath:
+    path:

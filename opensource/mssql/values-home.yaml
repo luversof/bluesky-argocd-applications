@@ -8,3 +8,6 @@ PersistentVolume:
   secrets:
     hostPath:
       path: /mnt/d/dev/data/mssql-secrets
+backup:
+  hostPath:
+    path: /mnt/d/dev/data/backup/mssql

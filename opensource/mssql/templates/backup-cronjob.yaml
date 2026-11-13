@@ -1,0 +1,48 @@
+# local-path 데이터는 Rancher Desktop 리셋 시 사라지므로 매일 사용자 DB를 D:\로 BACKUP DATABASE 하고 DB마다 최신 7개만 남긴다
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mssql-backup
+spec:
+  schedule: "0 18 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: backup
+            image: mcr.microsoft.com/mssql/server:2025-latest
+            securityContext:
+              runAsUser: 0
+            env:
+            - name: SQLCMDPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: mssql-sa-password
+                  name: mssql-secret
+            command:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+              q(){ /opt/mssql-tools18/bin/sqlcmd -C -b -S mssql-service -U sa -h -1 -W -Q "SET NOCOUNT ON; $1"; }
+              ts=$(date +%Y-%m-%d-%H%M)
+              for d in $(q "SELECT name FROM sys.databases WHERE database_id > 4 AND state_desc = 'ONLINE'"); do
+                q "BACKUP DATABASE [$d] TO DISK = N'/var/opt/mssql/backup/$d-$ts.bak' WITH INIT, CHECKSUM, COMPRESSION"
+                q "RESTORE VERIFYONLY FROM DISK = N'/var/opt/mssql/backup/$d-$ts.bak' WITH CHECKSUM"
+                (cd /backup && ls -1t "$d"-*.bak | tail -n +8 | xargs -r rm -f)
+              done
+              ls -l /backup
+            volumeMounts:
+            - name: backup
+              mountPath: /backup
+          volumes:
+          - name: backup
+            hostPath:
+              path: {{ .Values.backup.hostPath.path }}
+              type: DirectoryOrCreate
