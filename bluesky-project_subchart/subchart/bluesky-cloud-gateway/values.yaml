@@ -48,6 +48,10 @@ bluesky-project:
       paths:
       - path: /
         pathType: Prefix
+    - host: dynamiccrud.web.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
     - host: gate.web.bluesky.local
       paths:
       - path: /
