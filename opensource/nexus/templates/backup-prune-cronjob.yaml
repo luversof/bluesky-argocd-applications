@@ -1,0 +1,27 @@
+# Nexus H2 백업 작업은 오래된 백업을 지우지 않으므로 최신 7개만 남긴다
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nexus-backup-prune
+spec:
+  schedule: "0 20 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: prune
+            image: busybox
+            command: ["sh", "-c", "cd /nexus-backup && ls -1t nexus-*.zip 2>/dev/null | tail -n +8 | xargs -r rm -f && ls -l"]
+            volumeMounts:
+            - name: nexus-backup
+              mountPath: /nexus-backup
+          volumes:
+          - name: nexus-backup
+            hostPath:
+              path: {{ .Values.backup.hostPath.path }}
+              type: DirectoryOrCreate
