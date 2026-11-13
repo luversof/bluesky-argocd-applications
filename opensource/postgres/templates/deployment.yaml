@@ -6,7 +6,10 @@ metadata:
   labels:
     app: postgres
 spec:
-  replicas: 0
+  replicas: 1
+  # 같은 데이터 디렉터리에 postgres 두 개가 동시에 뜨지 않게 한다
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: postgres
@@ -36,7 +39,8 @@ spec:
         - name: postgres-volume
           mountPath: /var/lib/postgresql/18/docker
       volumes:
+      # 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다. 백업은 postgres-backup CronJob
       - name: postgres-volume
         persistentVolumeClaim:
-          claimName: postgres-pvc
+          claimName: postgres-local-pvc
 {{- end }}
