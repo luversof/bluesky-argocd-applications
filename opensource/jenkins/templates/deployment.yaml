@@ -33,7 +33,7 @@ spec:
         - containerPort: 50000
         env:
         - name: JAVA_OPTS
-          value: "-Duser.timezone=Asia/Seoul"
+          value: "-Duser.timezone=Asia/Seoul -Djenkins.model.Jenkins.workspacesDir=/var/jenkins_workspace/${ITEM_FULL_NAME}"
         resources:
           requests:
 #            cpu: '1'
@@ -50,6 +50,9 @@ spec:
           mountPath: /root/.docker
         - name: jenkins-home
           mountPath: /var/jenkins_home
+        # workspace와 .m2는 9p(D:\) 마운트가 작은 파일 I/O에서 매우 느려 VM 내부 local-path에 둔다
+        - name: jenkins-workspace
+          mountPath: /var/jenkins_workspace
         - name: jenkins-m2
           mountPath: /root/.m2
         # 절대 권장하지 않는 방식임
@@ -70,8 +73,11 @@ spec:
       - name: jenkins-home
         persistentVolumeClaim:
           claimName: jenkins-home-pvc
+      - name: jenkins-workspace
+        persistentVolumeClaim:
+          claimName: jenkins-workspace-local-pvc
       - name: jenkins-m2
         persistentVolumeClaim:
-          claimName: jenkins-m2-pvc
+          claimName: jenkins-m2-local-pvc
 #      imagePullSecrets:
 #      - name: bluesky-secret

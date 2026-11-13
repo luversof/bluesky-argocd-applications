@@ -5,6 +5,3 @@ PersistentVolume:
   jenkinsHome:
     hostPath:
       path: /mnt/c/data/jenkins-home
-  jenkinsM2:
-    hostPath:
-      path: /mnt/c/data/jenkins-m2

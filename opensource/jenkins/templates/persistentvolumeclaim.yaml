@@ -27,12 +27,23 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jenkins-m2-pvc
+  name: jenkins-workspace-local-pvc
 spec:
-  volumeName: jenkins-m2-pv
-  storageClassName: ""
+  storageClassName: local-path
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 2Gi
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-m2-local-pvc
+spec:
+  storageClassName: local-path
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
