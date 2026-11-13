@@ -5,7 +5,10 @@ metadata:
   labels:
     app: sonarqube
 spec:
-  replicas: 0
+  replicas: 1
+  # 같은 데이터 디렉터리에 두 인스턴스가 동시에 뜨지 않게 한다
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: sonarqube
@@ -99,9 +102,10 @@ spec:
         - name: sonarqube-extensions
           mountPath: /opt/sonarqube/extensions
       volumes:
+      # 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다
       - name: sonarqube-data
         persistentVolumeClaim: 
-          claimName: sonarqube-data-pvc
+          claimName: sonarqube-data-local-pvc
       - name: sonarqube-logs
         persistentVolumeClaim: 
           claimName: sonarqube-logs-pvc

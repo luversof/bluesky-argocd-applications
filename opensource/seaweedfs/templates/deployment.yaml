@@ -5,7 +5,7 @@ metadata:
   labels:
     app: seaweedfs
 spec:
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -33,9 +33,10 @@ spec:
             - name: seaweedfs-config
               mountPath: /etc/seaweedfs
       volumes:
+        # 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다
         - name: seaweedfs-data
           persistentVolumeClaim:
-            claimName: seaweedfs-data-pvc
+            claimName: seaweedfs-data-local-pvc
         - name: seaweedfs-config
           configMap:
             name: seaweedfs-s3-config

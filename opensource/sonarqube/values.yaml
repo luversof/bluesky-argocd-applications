@@ -1,7 +1,4 @@
 PersistentVolume:
-  sonarqubeData:
-    hostPath:
-      path:
   sonarqubeLogs:
     hostPath:
       path:

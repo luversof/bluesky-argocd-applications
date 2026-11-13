@@ -1,3 +1,0 @@
-PersistentVolume:
-  hostPath:
-    path: /mnt/c/data/seaweedfs-data

@@ -1,7 +1,4 @@
 PersistentVolume:
-  sonarqubeData:
-    hostPath:
-      path: /mnt/c/data/sonarqube-data
   sonarqubeLogs:
     hostPath:
       path: /mnt/c/data/sonarqube-logs
