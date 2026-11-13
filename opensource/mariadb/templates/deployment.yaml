@@ -5,7 +5,10 @@ metadata:
   labels:
     app: mariadb
 spec:
-  replicas: 0
+  replicas: 1
+  # 같은 데이터 디렉터리에 두 인스턴스가 동시에 뜨지 않게 한다
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mariadb
@@ -25,13 +28,18 @@ spec:
             secretKeyRef:
               key: mariadb-root-password
               name: mariadb-secret
-        args: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+        # mariadb 이미지(latest)가 올라가도 시스템 테이블을 맞춘다 (mariadb-upgrade)
+        - name: MARIADB_AUTO_UPGRADE
+          value: "1"
+        # lower-case-table-names=1: 이전 D:\(대소문자 무시, 자동 2)와 같게 테이블 이름 대소문자를 무시한다. 데이터 디렉터리 초기화 때만 정할 수 있다
+        args: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--lower-case-table-names=1"]
         volumeMounts:
         - name: mariadb-volume
           mountPath: /var/lib/mysql
       volumes:
+      # 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다. 백업은 mariadb-backup CronJob
       - name: mariadb-volume
         persistentVolumeClaim:
-          claimName: mariadb-pvc
+          claimName: mariadb-local-pvc
 #      imagePullSecrets:
 #      - name: bluesky-secret

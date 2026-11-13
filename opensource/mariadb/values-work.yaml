@@ -1,6 +1,3 @@
-PersistentVolume:
-  hostPath:
-    path: /mnt/c/data/mariadb
 backup:
   hostPath:
     path: /mnt/c/data/backup/mariadb
