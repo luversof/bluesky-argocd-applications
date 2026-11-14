@@ -7,4 +7,4 @@ appVersion: "1.16.0"
 dependencies:
 - name: bluesky-project
   version: 0.1.0
-  repository: https://luversof.github.io/bluesky-argocd-applications/
+  repository: file://../bluesky-project
