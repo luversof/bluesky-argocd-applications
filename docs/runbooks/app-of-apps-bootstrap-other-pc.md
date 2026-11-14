@@ -15,6 +15,10 @@ home PC에는 루트 앱 `bluesky-root`가 등록되어 있고, 자식 Applicati
     **home PC 렌더 결과가 바뀌지 않게 한다.** 고친 뒤 `env=home` 렌더 결과도 커밋 전과 같은지 확인한다.
 - 루트 앱의 `prune`은 `false`다. 목록에 없는 이 PC의 Application은 지워지지 않고 그대로 남는다(루트 앱이 관리하지 않을 뿐).
 - 기존 Application에는 `resources-finalizer`가 없다. 넣지 않는다. Application을 지워도 워크로드가 남게 하려는 것이다.
+- **오픈소스는 PC마다 설치한 것이 다르다. 이 PC에 실제로 설치된 것만 등록한다.**
+  `values.yaml`의 `opensource` 항목은 `envs`에 적힌 PC에만 등록되고, 지금은 모두 `envs: [home]`이거나 `envs: []`이다.
+  그래서 처음 렌더하면 work에는 opensource 앱이 하나도 없다. 이 PC에 설치된 것에만 `work`를 추가한다(1-1번).
+  설치되지 않은 오픈소스에 `work`를 넣으면 루트 앱 등록과 함께 새로 설치되므로 넣지 않는다. 새로 설치하려는 것이면 사용자에게 먼저 묻는다.
 
 ## 1. 준비
 
@@ -23,6 +27,20 @@ cd <bluesky-argocd-applications 클론>
 git checkout develop && git pull
 kubectl -n argocd get application bluesky-root   # 이미 있으면 이 문서 작업은 끝난 것이다. 3번 확인만 한다.
 ```
+
+## 1-1. 이 PC에 설치된 오픈소스 확인과 envs 반영
+
+이 PC의 ArgoCD에 등록된 opensource 앱과, 실제로 떠 있는 워크로드를 같이 본다.
+
+```bash
+kubectl -n argocd get applications -o jsonpath='{range .items[?(@.spec.project=="opensource")]}{.metadata.name}{"\t"}{.spec.source.path}{"\t"}{.status.sync.status}/{.status.health.status}{"\n"}{end}'
+kubectl -n opensource get deploy,statefulset
+```
+
+- ArgoCD에 등록되어 있고 워크로드도 있는 앱: `values.yaml`에서 그 항목의 `envs`에 `work`를 추가한다(예: `envs: [home]` → `envs: [home, work]`, `envs: []` → `envs: [work]`).
+- ArgoCD에 등록되어 있지만 워크로드가 없거나 Missing인 앱: 의도한 상태인지 사용자에게 묻고, 답에 따라 넣거나 뺀다.
+- `opensource/` 폴더에 차트가 있어도 이 PC의 ArgoCD에 없는 앱: 넣지 않는다.
+- `values.yaml` 목록에 없는 앱이 이 PC에 있으면: 계속 git으로 관리할지 사용자에게 묻고, 관리한다면 항목을 추가하고 `envs: [work]`를 준다(`path`가 `opensource/<name>`이 아니면 `path`도 적는다).
 
 ## 2. 실제 spec과 렌더 결과 비교
 
@@ -55,9 +73,10 @@ EOF
   - bluesky 앱: `destination`은 `name: in-cluster`, `namespace: default`만 있다(`server` 없음). `project: default`.
   - opensource 앱: `destination`은 `namespace: opensource`, `server: https://kubernetes.default.svc`. `project: opensource`.
   - 모든 앱: `syncPolicy.automated`에 `prune: false`, `selfHeal: false`. `sources: []` 같은 빈 필드는 없다.
-- **렌더에만 있음**: 등록하면 그 앱이 새로 생기고 auto sync로 배포된다. 이 PC에 배포하면 안 되는 앱이면 `values.yaml`에서 그 앱에 `envs: [home]`을 준다.
-  `superset`은 home 클러스터에 없어서 `envs: [work]`로 두었다. 이 PC에도 없고 배포하지 않을 거라면 그 항목에서 `envs`를 `[]`로 바꾼다.
-- **live 에만 있음**: 계속 git으로 관리할 앱이면 `values.yaml` 목록에 추가하고 `envs: [work]`를 준다. 아니면 그대로 둔다.
+- **렌더에만 있음**: 등록하면 그 앱이 새로 생기고 auto sync로 배포된다. **비어 있어야 한다.**
+  opensource 앱이 나오면 1-1번에서 설치되지 않은 것에 `work`를 넣은 것이므로 뺀다.
+  bluesky 앱이 나오면(이 PC에 없는 bluesky 앱) 사용자에게 묻고, 배포하지 않을 거라면 그 항목에 `envs: [home]`을 준다.
+- **live 에만 있음**: 1-1번에서 빠뜨린 opensource 앱이 없는지 다시 본다. 계속 git으로 관리할 앱이면 `values.yaml` 목록에 넣고 `envs`에 `work`를 준다. 아니면 그대로 둔다.
 
 git을 고쳤다면 2번을 다시 돌려 DIFF와 "렌더에만 있음"이 의도한 것만 남았는지 확인한다.
 `helm template root argocd_application --set env=home` 결과가 고치기 전과 같은지도 비교한 뒤 커밋하고 `develop`에 push한다.

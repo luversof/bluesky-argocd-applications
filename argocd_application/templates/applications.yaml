@@ -33,7 +33,7 @@ spec:
 {{- end }}
 {{- end }}
 {{- range .Values.opensource }}
-{{- if has $root.Values.env (.envs | default (list "home" "work")) }}
+{{- if has $root.Values.env (.envs | default list) }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
