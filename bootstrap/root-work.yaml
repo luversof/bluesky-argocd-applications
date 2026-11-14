@@ -1,0 +1,25 @@
+# PC당 한 번만 등록한다: kubectl apply -n argocd -f bootstrap/root-work.yaml
+# 이후 argocd_application/ 의 Application 목록은 git push 로 반영된다.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bluesky-root
+  namespace: argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: argocd
+  project: default
+  source:
+    path: argocd_application
+    repoURL: https://github.com/luversof/bluesky-argocd-applications.git
+    targetRevision: develop
+    helm:
+      parameters:
+        - name: env
+          value: work
+  syncPolicy:
+    automated:
+      # 목록에서 빠진 앱이 자동으로 지워지지 않게 prune 은 끈다
+      prune: false
+      selfHeal: false

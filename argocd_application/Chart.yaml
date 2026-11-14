@@ -1,0 +1,5 @@
+apiVersion: v2
+name: argocd-applications
+description: ArgoCD Application 목록 (app-of-apps). PC마다 루트 앱에서 env 값만 다르게 준다.
+type: application
+version: 0.1.0

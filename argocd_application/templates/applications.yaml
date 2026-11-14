@@ -1,0 +1,67 @@
+{{- $root := . }}
+{{- range .Values.bluesky }}
+{{- if has $root.Values.env (.envs | default (list "home" "work")) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: default
+  project: default
+  source:
+    path: bluesky-project_subchart
+    repoURL: {{ $root.Values.repoURL }}
+    targetRevision: {{ $root.Values.targetRevision }}
+    helm:
+      valueFiles:
+        - subchart/{{ .name }}/values.yaml
+        - subchart_{{ $root.Values.env }}/buildInfo-{{ .buildInfo }}/values.yaml
+      {{- with .valuesObject }}
+      valuesObject:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- if or (not (hasKey . "autoSync")) .autoSync }}
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- range .Values.opensource }}
+{{- if has $root.Values.env (.envs | default (list "home" "work")) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: opensource
+    server: https://kubernetes.default.svc
+  project: opensource
+  source:
+    path: {{ .path | default (printf "opensource/%s" .name) }}
+    repoURL: {{ $root.Values.repoURL }}
+    targetRevision: {{ $root.Values.targetRevision }}
+    helm:
+      {{- if .valuesObject }}
+      valuesObject:
+        {{- toYaml .valuesObject | nindent 8 }}
+      {{- else }}
+      valueFiles:
+        - values-{{ $root.Values.env }}.yaml
+      {{- end }}
+  {{- if or (not (hasKey . "autoSync")) .autoSync }}
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+  {{- end }}
+{{- end }}
+{{- end }}
