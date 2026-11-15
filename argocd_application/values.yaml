@@ -25,6 +25,7 @@ bluesky:
     buildInfo: bluesky-cloud
   - name: bluesky-api-blog
     buildInfo: bluesky-project
+    envs: [home]
   - name: bluesky-api-board
     buildInfo: bluesky-project
   - name: bluesky-api-bookkeeping
@@ -43,41 +44,42 @@ bluesky:
     buildInfo: bluesky-project
   - name: bluesky-web-dynamiccrud
     buildInfo: bluesky-project
+    envs: [home]
 
 # opensource/<name> 차트를 쓰는 앱. values-<env>.yaml 을 쓴다
 # 오픈소스는 PC마다 설치한 것만 다르므로 envs 를 반드시 적는다. envs 가 없거나 비어 있으면 어느 PC에도 등록하지 않는다.
 # 실제로 설치된 PC만 넣는다. 목록에 env 를 넣으면 그 PC에 루트 앱이 sync 될 때 새로 설치된다.
 opensource:
   - name: jenkins
-    envs: [home]
+    envs: [home, work]
   - name: mariadb
-    envs: [home]
+    envs: [home, work]
   - name: mssql
-    envs: [home]
+    envs: [home, work]
   - name: seaweedfs
-    envs: [home]
+    envs: [home, work]
   - name: mongo
-    envs: [home]
+    envs: [home, work]
   - name: nexus
-    envs: [home]
+    envs: [home, work]
   - name: postgres
-    envs: [home]
+    envs: [home, work]
   - name: rabbitmq
-    envs: [home]
+    envs: [home, work]
   - name: redis
-    envs: [home]
+    envs: [home, work]
   - name: tempo
-    envs: [home]
+    envs: [home, work]
   - name: opentelemetry-collector
-    envs: [home]
+    envs: [home, work]
   - name: grafana
-    envs: [home]
+    envs: [home, work]
   - name: sonarqube
-    envs: [home]
+    envs: [home, work]
   - name: prometheus
-    envs: [home]
+    envs: [home, work]
   - name: loki
-    envs: [home]
+    envs: [home, work]
   - name: home-assistant
     envs: [home]
   - name: superset
