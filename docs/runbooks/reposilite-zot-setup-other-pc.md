@@ -106,9 +106,28 @@ rdctl shell sh -c 'while read i; do n=zot.bluesky.local:5000/${i#nexus.bluesky.l
 2. `bluesky-boot-connectioninfo`, `-crypto`, `-devcheck`.
 3. `bluesky-cloud ci develop`, `bluesky-project ci develop` → jib가 `zot-service:5000`에 push(콘솔에서 확인), `update argocd manifest` job이 buildNumber 커밋 → ArgoCD가 새 태그를 zot에서 pull.
 
-## 6. 남은 일(두 PC 모두 전환한 뒤)
+## 6. Nexus 제거 (work PC는 2026-11-16 완료)
+
+1. `argocd_application/values.yaml`에서 그 PC의 env를 `nexus` `envs`에서 뺀다(커밋·push). 루트 앱이 `prune: false`라 Application은 남고 루트 앱이 OutOfSync(`requiresPruning`)가 된다.
+2. `nexus` Application에 finalizer가 없으므로 붙인 뒤 지운다(리소스까지 cascade 삭제, `nexus-data-local-pvc`의 local-path 데이터도 삭제됨. 원본 `C:\data
+exus-data`는 hostPath라 남는다):
+   ```
+   kubectl -n argocd patch application nexus --type merge -p '{"metadata":{"finalizers":["resources-finalizer.argocd.argoproj.io"]}}'
+   kubectl -n argocd delete application nexus
+   ```
+3. Jenkins `settings.xml`에서 Nexus server(`bluesky-releases`, `bluesky-snapshots`, `nexus-service:8083`) 삭제(백업 후).
+4. 사용자가 직접(시스템 설정):
+   - VM `daemon.json`에서 Nexus 항목 삭제 후 SIGHUP:
+     `rdctl shell sudo sed -i '/"nexus\.bluesky\.local:8083",/d;/"nexus-service:8083",/d' /etc/docker/daemon.json`
+     `rdctl shell sudo kill -HUP $(rdctl shell pidof dockerd)`
+   - Windows hosts의 `nexus.bluesky.local` 줄 삭제.
+5. 원본 `C:\data
+exus-data` 삭제는 선택(복구 불가).
+
+## 7. 남은 일(두 PC 모두 전환한 뒤)
 
 - Jenkins settings.xml의 Nexus server 항목(`bluesky-releases`, `bluesky-snapshots`, `nexus-service:8083`) 제거.
-- Nexus 앱 제거(`argocd_application/values.yaml`에서 `nexus` 삭제).
+- `argocd_application/values.yaml`에서 `nexus` 항목과 `opensource/nexus` 차트 삭제.
+- `bluesky-project/values.yaml`의 `imagePullSecrets: regcred`(Nexus docker 인증) 삭제 후 각 PC의 `default/regcred` secret 삭제. zot은 인증이 없다.
 - 개발 PC에서 `-Plocal`로 deploy하려면 `~/.m2/settings.xml`에 server `reposilite-releases`·`reposilite-snapshots`(Reposilite 토큰 이름·비밀값)를 넣는다. 개발 PC용 토큰은 아직 만들지 않았다(`jenkins` 토큰처럼 `/releases`·`/snapshots` `r`,`w` 경로 권한으로 만든다).
 - Reposilite 데이터 백업 CronJob(현재 없음).
