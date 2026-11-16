@@ -38,7 +38,7 @@ bluesky:
     buildInfo: bluesky-project
   - name: bluesky-web-gate
     buildInfo: bluesky-project
-  - name: bluesky-web-swagger-ui
+  - name: bluesky-web-apidocs
     buildInfo: bluesky-project
   - name: bluesky-web-user
     buildInfo: bluesky-project

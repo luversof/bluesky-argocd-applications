@@ -1,14 +1,14 @@
 bluesky-project:
-  nameOverride: bluesky-web-swagger-ui
+  nameOverride: bluesky-web-apidocs
   image:
-    artifactId: bluesky-web-swagger-ui
+    artifactId: bluesky-web-apidocs
   service:
     port: 30120
     nodePort: 30120
   ingress:
 #    enabled: true
     hosts:
-    - host: swagger.web.bluesky.local
+    - host: apidocs.web.bluesky.local
       paths:
       - path: /
         pathType: Prefix

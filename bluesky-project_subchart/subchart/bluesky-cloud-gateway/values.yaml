@@ -56,7 +56,7 @@ bluesky-project:
       paths:
       - path: /
         pathType: Prefix
-    - host: swagger.web.bluesky.local
+    - host: apidocs.web.bluesky.local
       paths:
       - path: /
         pathType: Prefix
