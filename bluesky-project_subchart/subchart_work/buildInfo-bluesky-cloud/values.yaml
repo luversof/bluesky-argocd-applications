@@ -1,5 +1,5 @@
 bluesky-project:
   image:
-    host: nexus.bluesky.local:8083
+    host: zot.bluesky.local:5000
     buildVersion: 0.0.1-SNAPSHOT
     buildNumber: 31

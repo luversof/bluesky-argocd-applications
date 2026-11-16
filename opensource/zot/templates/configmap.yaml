@@ -4,6 +4,7 @@ metadata:
   name: zot-config
 data:
   # 인증 없음: Nexus와 같이 이 PC의 Rancher Desktop 안에서만 쓰는 HTTP registry다(docs/adr/0001-nexus-internal-http.md)
+  # compat docker2s2: jib·docker push 기본값인 Docker manifest(v2 schema 2)를 받는다. 없으면 PUT manifest 가 415로 거부된다
   # retention: 저장소마다 최근 push한 태그 10개만 남긴다(Nexus docker-hosted-14d cleanup 대체), gc가 실제 삭제를 한다
   config.json: |
     {
@@ -27,7 +28,8 @@ data:
       },
       "http": {
         "address": "0.0.0.0",
-        "port": "5000"
+        "port": "5000",
+        "compat": ["docker2s2"]
       },
       "log": {
         "level": "info"
