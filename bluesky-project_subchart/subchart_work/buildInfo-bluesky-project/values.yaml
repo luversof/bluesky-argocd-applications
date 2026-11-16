@@ -2,4 +2,4 @@ bluesky-project:
   image:
     host: zot.bluesky.local:5000
     buildVersion: 0.0.1-SNAPSHOT
-    buildNumber: 60
+    buildNumber: 62
