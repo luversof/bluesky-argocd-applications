@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reposilite-service
+spec:
+  selector:
+    app: reposilite
+  ports:
+  - protocol: TCP
+    name: http
+    port: 8080
+    targetPort: 8080

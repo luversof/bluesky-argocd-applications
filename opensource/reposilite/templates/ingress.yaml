@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reposilite-ingress
+spec:
+  rules:
+  - host: reposilite.bluesky.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: reposilite-service
+            port:
+              number: 8080

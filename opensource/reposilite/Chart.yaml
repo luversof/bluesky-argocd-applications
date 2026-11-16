@@ -1,0 +1,6 @@
+apiVersion: v2
+name: reposilite
+description: Maven 저장소 (Nexus Maven 대체)
+type: application
+version: 0.1.0
+appVersion: "latest"

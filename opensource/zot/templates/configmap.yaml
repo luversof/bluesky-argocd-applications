@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zot-config
+data:
+  # 인증 없음: Nexus와 같이 이 PC의 Rancher Desktop 안에서만 쓰는 HTTP registry다(docs/adr/0001-nexus-internal-http.md)
+  # retention: 저장소마다 최근 push한 태그 10개만 남긴다(Nexus docker-hosted-14d cleanup 대체), gc가 실제 삭제를 한다
+  config.json: |
+    {
+      "distSpecVersion": "1.1.1",
+      "storage": {
+        "rootDirectory": "/var/lib/registry",
+        "gc": true,
+        "gcDelay": "1h",
+        "gcInterval": "24h",
+        "retention": {
+          "delay": "24h",
+          "policies": [
+            {
+              "repositories": ["**"],
+              "deleteReferrers": false,
+              "deleteUntagged": true,
+              "keepTags": [{ "mostRecentlyPushedCount": 10 }]
+            }
+          ]
+        }
+      },
+      "http": {
+        "address": "0.0.0.0",
+        "port": "5000"
+      },
+      "log": {
+        "level": "info"
+      },
+      "extensions": {
+        "search": { "enable": true },
+        "ui": { "enable": true }
+      }
+    }

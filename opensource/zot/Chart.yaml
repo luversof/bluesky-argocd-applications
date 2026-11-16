@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zot
+description: OCI(Docker) 이미지 저장소 (Nexus docker-hosted 대체)
+type: application
+version: 0.1.0
+appVersion: "latest"

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zot-deployment
+  labels:
+    app: zot
+spec:
+  replicas: 1
+  # PVC가 ReadWriteOnce라 새 pod가 뜨기 전에 기존 pod를 내린다
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: zot
+  template:
+    metadata:
+      labels:
+        app: zot
+      annotations:
+        # 설정이 바뀌면 pod를 다시 띄운다
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: zot
+        image: ghcr.io/project-zot/zot-linux-amd64:latest
+        ports:
+        - containerPort: 5000
+        readinessProbe:
+          httpGet:
+            path: /v2/
+            port: 5000
+        resources:
+          requests:
+            memory: '128Mi'
+          limits:
+            memory: '1Gi'
+        volumeMounts:
+        - name: zot-config
+          mountPath: /etc/zot
+        - name: zot-data
+          mountPath: /var/lib/registry
+      volumes:
+      - name: zot-config
+        configMap:
+          name: zot-config
+      # 9p(C:\, D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다
+      - name: zot-data
+        persistentVolumeClaim:
+          claimName: zot-data-local-pvc

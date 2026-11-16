@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reposilite-deployment
+  labels:
+    app: reposilite
+spec:
+  replicas: 1
+  # PVC가 ReadWriteOnce라 새 pod가 뜨기 전에 기존 pod를 내린다
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: reposilite
+  template:
+    metadata:
+      labels:
+        app: reposilite
+    spec:
+      containers:
+      - name: reposilite
+        image: dzikoysk/reposilite:latest
+        # 관리 토큰은 콘솔 명령(token-generate)으로 만든다: kubectl -n opensource attach -it deploy/reposilite-deployment
+        # 토큰을 git에 두지 않으려고 REPOSILITE_OPTS --token 대신 콘솔을 쓴다
+        stdin: true
+        tty: true
+        env:
+        - name: JAVA_OPTS
+          value: "-Xmx512m"
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: '256Mi'
+          limits:
+            memory: '1Gi'
+        volumeMounts:
+        - name: reposilite-data
+          mountPath: /app/data
+      volumes:
+      # 9p(C:\, D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다
+      - name: reposilite-data
+        persistentVolumeClaim:
+          claimName: reposilite-data-local-pvc

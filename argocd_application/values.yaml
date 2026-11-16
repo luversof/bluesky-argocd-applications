@@ -62,6 +62,11 @@ opensource:
     envs: [home, work]
   - name: nexus
     envs: [home, work]
+  # Nexus 대체 (Maven: reposilite, Docker: zot)
+  - name: reposilite
+    envs: [home, work]
+  - name: zot
+    envs: [home, work]
   - name: postgres
     envs: [home, work]
   - name: rabbitmq

@@ -1,0 +1,15 @@
+# LoadBalancer: k8s 노드(docker)가 zot.bluesky.local:5000 으로 이미지를 pull 한다(nexus.bluesky.local:8083 과 같은 방식)
+# Jenkins jib push 는 클러스터 내부 주소 zot-service:5000 을 쓴다
+apiVersion: v1
+kind: Service
+metadata:
+  name: zot-service
+spec:
+  selector:
+    app: zot
+  ports:
+  - protocol: TCP
+    name: registry
+    port: 5000
+    targetPort: 5000
+  type: LoadBalancer
