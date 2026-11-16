@@ -16,18 +16,26 @@ work PC의 Nexus는 업로드가 HTTP 400으로 계속 거부됐고(동의는 �
 
 zot도 Nexus와 같이 HTTP, 인증 없이 둔다(docs/adr/0001-nexus-internal-http.md와 같은 이유).
 
-## 방식: git(pom)은 바꾸지 않고 Jenkins 쪽만 바꾼다
+## 방식: 주소는 프로젝트 git(pom)에, Jenkins에는 자격 증명만
 
-pom 10곳의 `nexus-k8s` 프로필(저장소 id `bluesky-nexus-k8s`, deploy id `bluesky-releases`/`bluesky-snapshots`, `build.image=nexus-service:8083/luversof`)은 그대로 둔다.
-`nexus-k8s` 프로필은 bluesky-cloud 하위 모듈에서 jib를 켜는 역할도 하므로 job goals의 `-Pnexus-k8s`도 유지한다.
-대신 Jenkins에서 덮어쓴다.
+주소는 Jenkins 설정으로 덮어쓰지 않고 pom에 둔다(2026-11-16 결정).
+pom 6곳의 CI 프로필 주소를 바꾸고, 프로필 id를 `nexus-k8s` → `k8s-ci`로 바꿨다(이 6곳 + bluesky-cloud 하위 모듈 4곳. 하위 모듈에서는 jib를 켜는 역할).
 
-- 읽기: Jenkins Maven `settings.xml`의 mirror가 `bluesky-nexus-k8s`를 Reposilite `public`으로 돌린다.
-- deploy: job goals에 `-DaltReleaseDeploymentRepository` / `-DaltSnapshotDeploymentRepository`.
-- 이미지: job goals에 `-Dbuild.image=zot-service:5000/luversof`(pom 속성보다 명령줄이 우선).
+| pom | 바뀐 것 |
+|---|---|
+| `bluesky-boot/bluesky-boot-build/bluesky-boot-dependencies/pom.xml` | 아래 3가지 + `build.image` `nexus-service:8083/luversof` → `zot-service:5000/luversof` |
+| `bluesky-boot-connectioninfo/bluesky-boot-connectioninfo-dependencies/pom.xml`, `bluesky-boot-crypto/pom.xml`, `bluesky-boot-devcheck/bluesky-boot-devcheck-dependencies/pom.xml`, `bluesky-cloud/bluesky-cloud-parent/pom.xml`, `bluesky-project/bluesky-parent/pom.xml` | 읽기 저장소 `bluesky-nexus-k8s` → `reposilite-public` (`http://reposilite-service:8080/public/`), deploy `bluesky-releases`/`bluesky-snapshots` → `reposilite-releases`/`reposilite-snapshots` (`http://reposilite-service:8080/releases/`, `/snapshots/`) |
 
-PC마다 Jenkins가 따로라 한 PC씩 전환할 수 있고, 되돌릴 때는 goals와 settings.xml만 원래대로 하면 된다.
-두 PC 모두 전환한 뒤 pom 정리(프로필 이름·URL 변경, Nexus 제거)를 한다.
+`build.image`는 bluesky-cloud·bluesky-project가 부모 `bluesky-boot-dependencies`(SNAPSHOT)에서 물려받는다. 그래서 bluesky-boot를 먼저 deploy해야 cloud·project가 zot으로 push한다.
+
+**pom은 두 PC가 공유한다.** 이 pom이 push된 뒤에는 어느 PC의 Jenkins든 Reposilite·zot으로 deploy·push하므로, 그 PC에서 아래 0~4를 마친 뒤에 CI를 돌린다.
+개발 PC용 주소도 바꿨다.
+- `nexus-local` 프로필(bluesky-boot-dependencies, bluesky-cloud-parent) → 이름 `local`, 주소 `http://reposilite.bluesky.local/public/`·`/releases/`·`/snapshots/`, id `reposilite-public`·`reposilite-releases`·`reposilite-snapshots`.
+- 항상 켜진 저장소 `bluesky-snapshots`(bluesky-cloud-parent, bluesky-parent) → id `reposilite-snapshots`, `http://reposilite.bluesky.local/snapshots/`.
+  CI pod에서는 이 주소가 풀리지 않아 `Failed to transfer` 로그가 남지만 빌드는 진행된다(Nexus 때와 같음).
+이제 pom 어디에도 Nexus 주소가 없다.
+
+쓰이지 않던 `nexus-docker` 프로필(docker-compose 시절 `nexus:8081`)은 bluesky-boot-dependencies·bluesky-cloud-parent·bluesky-parent에서 지웠다.
 
 ## 0. 사전 조건
 
@@ -69,14 +77,12 @@ Reposilite 콘솔(`kubectl attach`)은 Git Bash처럼 TTY가 없는 셸에서 `E
 ## 3. Jenkins
 
 1. Maven 설정 파일: `/var/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/maven/conf/settings.xml`(jenkins-home PVC, 전역 설정 = 기본 provider).
-   먼저 백업(`cp -p settings.xml settings.xml.bak-<날짜>`) 후 추가:
-   - `<servers>`: `reposilite-releases`, `reposilite-snapshots` (username `jenkins`, password = jenkins 토큰 비밀값)
-   - `<mirrors>`: `<mirror><id>reposilite-public</id><mirrorOf>bluesky-nexus-k8s</mirrorOf><url>http://reposilite-service:8080/public</url></mirror>`
-   - mirror는 저장 즉시 모든 job에 적용된다.
-2. job goals 뒤에 추가(config.xml POST, crumb 필요. 원본 config.xml은 먼저 백업):
-   - 6개 모두: `-DaltReleaseDeploymentRepository=reposilite-releases::http://reposilite-service:8080/releases -DaltSnapshotDeploymentRepository=reposilite-snapshots::http://reposilite-service:8080/snapshots`
-     (`bluesky-boot`, `bluesky-boot-connectioninfo`, `bluesky-boot-crypto`, `bluesky-boot-devcheck`, `bluesky-cloud`, `bluesky-project`의 `* ci develop`)
-   - `bluesky-cloud`, `bluesky-project`에는 추가로 `-Dbuild.image=zot-service:5000/luversof`
+   먼저 백업(`cp -p settings.xml settings.xml.bak-<날짜>`) 후 `<servers>`에 추가:
+   `reposilite-releases`, `reposilite-snapshots` (username `jenkins`, password = jenkins 토큰 비밀값). id는 pom의 deploy 저장소 id와 같아야 한다.
+2. 주소는 pom에 있으므로 mirror나 job goals 덮어쓰기는 넣지 않는다.
+   job goals의 `-Pnexus-k8s`만 `-Pk8s-ci`로 바꾼다(6개: `bluesky-boot`, `bluesky-boot-connectioninfo`, `bluesky-boot-crypto`, `bluesky-boot-devcheck`, `bluesky-cloud`, `bluesky-project`의 `* ci develop`).
+   pom push와 같은 때에 바꾼다. 어긋나면 그 사이 CI는 프로필 없이 돌아 deploy 대상이 없어 실패한다.
+   zot은 인증이 없어 docker용 server 항목도 필요 없다(기존 `nexus-service:8083` server 항목은 쓰이지 않는다).
 
 ## 4. 배포 중인 이미지를 zot으로 옮기고 이미지 주소 전환
 
@@ -93,12 +99,16 @@ rdctl shell sh -c 'while read i; do n=zot.bluesky.local:5000/${i#nexus.bluesky.l
 
 ## 5. CI 확인 순서
 
-1. `bluesky-boot ci develop` → Reposilite `snapshots`에 deploy되는지(콘솔 `Uploaded to reposilite-snapshots`).
+이미지 주소(4절)를 먼저 바꾼 뒤 CI를 돌린다. 반대로 하면 `update argocd manifest`가 새 buildNumber를 커밋할 때 주소가 아직 Nexus라
+새 pod가 Nexus에 없는 태그를 찾아 ImagePullBackOff가 된다(work PC에서 겪음. 기존 pod는 살아 있어 서비스는 안 끊긴다).
+
+1. `bluesky-boot ci develop` → Reposilite `snapshots`에 deploy되는지(콘솔 `Uploaded to reposilite-snapshots`). 바뀐 `build.image`가 이때 배포된다.
 2. `bluesky-boot-connectioninfo`, `-crypto`, `-devcheck`.
-3. `bluesky-cloud ci develop`, `bluesky-project ci develop` → jib가 `zot-service:5000`에 push, `update argocd manifest` job이 buildNumber 커밋 → ArgoCD가 새 태그를 zot에서 pull.
+3. `bluesky-cloud ci develop`, `bluesky-project ci develop` → jib가 `zot-service:5000`에 push(콘솔에서 확인), `update argocd manifest` job이 buildNumber 커밋 → ArgoCD가 새 태그를 zot에서 pull.
 
 ## 6. 남은 일(두 PC 모두 전환한 뒤)
 
-- pom 10곳의 `nexus-k8s` 프로필 정리와 `build.image` 기본값 변경, Jenkins goals의 덮어쓰기 옵션 제거.
-- Nexus 앱 제거(`argocd_application/values.yaml`에서 `nexus` 삭제), PC별 개발자 `~/.m2/settings.xml` 저장소 주소 변경.
+- Jenkins settings.xml의 Nexus server 항목(`bluesky-releases`, `bluesky-snapshots`, `nexus-service:8083`) 제거.
+- Nexus 앱 제거(`argocd_application/values.yaml`에서 `nexus` 삭제).
+- 개발 PC에서 `-Plocal`로 deploy하려면 `~/.m2/settings.xml`에 server `reposilite-releases`·`reposilite-snapshots`(Reposilite 토큰 이름·비밀값)를 넣는다. 개발 PC용 토큰은 아직 만들지 않았다(`jenkins` 토큰처럼 `/releases`·`/snapshots` `r`,`w` 경로 권한으로 만든다).
 - Reposilite 데이터 백업 CronJob(현재 없음).
