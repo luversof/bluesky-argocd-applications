@@ -1,0 +1,18 @@
+bluesky-project:
+  nameOverride: bluesky-web-dynamiccrud2
+  image:
+    artifactId: bluesky-web-dynamiccrud2
+  service:
+    port: 30125
+    nodePort: 30125
+  env:
+    # 화면 날짜시간 입력(datetime-local)을 서버 기본 타임존으로 해석한다. 컨테이너 기본(UTC)이면 9시간 밀린다.
+    - name: TZ
+      value: Asia/Seoul
+  ingress:
+#    enabled: true
+    hosts:
+    - host: dynamiccrud2.web.bluesky.local
+      paths:
+      - path: /
+        pathType: Prefix
