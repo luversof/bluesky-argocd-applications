@@ -49,18 +49,22 @@ bluesky-project:
       - path: /
         pathType: Prefix
     - host: dynamiccrud2.web.bluesky.local
+      redirectHttps: true
       paths:
       - path: /
         pathType: Prefix
     - host: gate.web.bluesky.local
+      redirectHttps: true
       paths:
       - path: /
         pathType: Prefix
     - host: apidocs.web.bluesky.local
+      redirectHttps: true
       paths:
       - path: /
         pathType: Prefix
     - host: user.web.bluesky.local
+      redirectHttps: true
       paths:
       - path: /
         pathType: Prefix
