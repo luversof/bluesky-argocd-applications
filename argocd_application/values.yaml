@@ -64,9 +64,6 @@ opensource:
     envs: [home, work]
   - name: mongo
     envs: [home, work]
-  # home 전환(Reposilite·zot) 뒤 제거. work 는 2026-11-16 전환 완료
-  - name: nexus
-    envs: [home]
   # Nexus 대체 (Maven: reposilite, Docker: zot)
   - name: reposilite
     envs: [home, work]
