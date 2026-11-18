@@ -1,1 +1,3 @@
-# PC별 차이가 없다. values-<env>.yaml 은 app-of-apps 가 valueFiles 로 요구해서 둔다.
+backup:
+  hostPath:
+    path:

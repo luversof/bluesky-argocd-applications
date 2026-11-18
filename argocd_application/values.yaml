@@ -42,13 +42,9 @@ bluesky:
     buildInfo: bluesky-project
   - name: bluesky-web-user
     buildInfo: bluesky-project
-  - name: bluesky-web-dynamiccrud
-    buildInfo: bluesky-project
-    envs: [home]
-  # 설정 catalog(dynamiccrud2) · connectioninfo 연결은 work PC DB 에만 있다(PC 마다 DB 따로). home 에 올리려면 그 PC DB 에 먼저 만든다
+  # 설정 catalog(dynamiccrud2) · connectioninfo 연결은 PC 마다 DB 에 따로 만든다(PC 마다 DB 따로)
   - name: bluesky-web-dynamiccrud2
     buildInfo: bluesky-project
-    envs: [work]
 
 # opensource/<name> 차트를 쓰는 앱. values-<env>.yaml 을 쓴다
 # 오픈소스는 PC마다 설치한 것만 다르므로 envs 를 반드시 적는다. envs 가 없거나 비어 있으면 어느 PC에도 등록하지 않는다.

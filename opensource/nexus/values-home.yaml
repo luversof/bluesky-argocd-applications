@@ -1,3 +1,0 @@
-backup:
-  hostPath:
-    path: /mnt/d/dev/data/backup/nexus

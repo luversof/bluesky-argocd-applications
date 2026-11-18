@@ -11,8 +11,6 @@ image:
   buildVersion: 
   buildNumber: 
   
-imagePullSecrets:
- - name: regcred
 nameOverride: ""
   
 service:

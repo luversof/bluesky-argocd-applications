@@ -1,0 +1,46 @@
+# local-path 데이터는 Rancher Desktop 리셋 시 사라지므로 매일 백업하고 최신 7개만 남긴다
+# snapshots(CI가 다시 만든다)와 public(Maven Central 캐시)은 제외한다
+# shortcut: 실행 중인 reposilite.db(SQLite)를 그대로 tar로 복사한다. 백업이 깨지면 sqlite3 .backup으로 바꾼다
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: reposilite-backup
+spec:
+  schedule: "30 18 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          # RWO PVC는 같은 노드의 pod끼리 함께 마운트할 수 있다(단일 노드)
+          containers:
+          - name: backup
+            image: busybox
+            command:
+            - sh
+            - -c
+            - |
+              set -eu
+              f=/backup/reposilite-$(date +%Y-%m-%d-%H%M).tar.gz
+              tar -czf "$f.tmp" -C /data --exclude=./repositories/snapshots --exclude=./repositories/public .
+              mv "$f.tmp" "$f"
+              cd /backup && ls -1t reposilite-*.tar.gz | tail -n +8 | xargs -r rm -f
+              ls -l /backup
+            volumeMounts:
+            - name: data
+              mountPath: /data
+              readOnly: true
+            - name: backup
+              mountPath: /backup
+          volumes:
+          - name: data
+            persistentVolumeClaim:
+              claimName: reposilite-data-local-pvc
+          - name: backup
+            hostPath:
+              path: {{ .Values.backup.hostPath.path }}
+              type: DirectoryOrCreate

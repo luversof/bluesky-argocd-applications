@@ -126,8 +126,10 @@ exus-data` 삭제는 선택(복구 불가).
 
 ## 7. 남은 일(두 PC 모두 전환한 뒤)
 
-- Jenkins settings.xml의 Nexus server 항목(`bluesky-releases`, `bluesky-snapshots`, `nexus-service:8083`) 제거.
-- `argocd_application/values.yaml`에서 `nexus` 항목과 `opensource/nexus` 차트 삭제.
-- `bluesky-project/values.yaml`의 `imagePullSecrets: regcred`(Nexus docker 인증) 삭제 후 각 PC의 `default/regcred` secret 삭제. zot은 인증이 없다.
-- 개발 PC에서 `-Plocal`로 deploy하려면 `~/.m2/settings.xml`에 server `reposilite-releases`·`reposilite-snapshots`(Reposilite 토큰 이름·비밀값)를 넣는다. 개발 PC용 토큰은 아직 만들지 않았다(`jenkins` 토큰처럼 `/releases`·`/snapshots` `r`,`w` 경로 권한으로 만든다).
-- Reposilite 데이터 백업 CronJob(현재 없음).
+home PC는 2026-11-18 0~6절을 마쳤다. home에서는 daemon.json에 Nexus 항목이 원래 없었고, `zot.bluesky.local:5000`은 hosts가 `127.0.0.1`이어도 `insecure-registries`에 따로 넣어야 했다(containerd-snapshotter).
+
+- [x] Jenkins settings.xml의 Nexus server 항목 제거 — home 2026-11-18 (work는 6절에서 완료).
+- [x] `argocd_application/values.yaml`의 `nexus` 항목과 `opensource/nexus` 차트 삭제 — 2026-11-18. `envs: []`로 비우면 `default` 때문에 두 PC 모두로 해석되므로 항목을 지운다.
+- [x] `bluesky-project/values.yaml`의 `imagePullSecrets: regcred` 삭제 — 2026-11-18. home의 `default/regcred` secret 삭제. **work PC는 직접:** `kubectl -n default delete secret regcred`.
+- [x] 개발 PC `~/.m2/settings.xml`: Reposilite 토큰 `dev-home`(`/releases`·`/snapshots` `r`,`w`)을 만들어 server `reposilite-releases`·`reposilite-snapshots`에 넣었다 — home. **work PC는** 같은 방식으로 `dev-work` 토큰을 만든다.
+- [x] Reposilite 백업 CronJob `reposilite-backup`(`opensource/reposilite/templates/backup-cronjob.yaml`): 매일 18:30, `backup.hostPath.path`로 tar.gz, 최신 7개. snapshots·public은 제외(CI가 다시 만들거나 Maven Central 캐시).
