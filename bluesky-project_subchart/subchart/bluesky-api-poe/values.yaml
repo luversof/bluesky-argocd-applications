@@ -46,9 +46,20 @@ bluesky-project:
         - name: poe-data
           mountPath: /host-data
           readOnly: true
+  # 데이터 갱신 파이프라인(tools/poe-extract · poe2-extract, 관리 화면 '데이터 갱신')을 파드 안에서 돌리기 위한 도구를
+  # 앱 컨테이너 기동 시 설치한다(이미지 관리 없음 — 위 initContainer 와 같은 방침). 기동이 20~40초 늦어지고 인터넷이 필요하다.
+  # 뒤의 java 는 jib 기본 entrypoint 와 같고, args(--spring.profiles.active …)는 "$@" 로 넘어간다.
+  command:
+    - sh
+    - -c
+    - apk add --no-cache nodejs npm imagemagick git luajit && exec java -cp @/app/jib-classpath-file @/app/jib-main-class-file "$@"
+    - sh
   # @Value("${poe.*}") 의 env relaxed binding: 점/대시 → '_' (대시 제거형 POE_DATADIR 는 안 붙음)
   # LD_LIBRARY_PATH/LUA_CPATH 는 JVM(ProcessBuilder) 이 luajit 자식 프로세스에 그대로 상속시킨다.
   env:
+    # 갱신 스크립트는 os.homedir()/.poe-gamedata 에 쓴다 → 마운트 위치의 부모로 맞춘다(JVM 의 user.home 은 이 값과 무관)
+    - name: HOME
+      value: /usr/local/app
     - name: POE_DATA_DIR
       value: /usr/local/app/.poe-gamedata/poe1
     - name: POE_POB_SRC_DIR

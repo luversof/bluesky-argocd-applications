@@ -26,6 +26,10 @@ spec:
       {{- end }}
       containers:
         - name: spring
+          {{- with .Values.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           args:
             - '--spring.profiles.active={{ .Values.springProfilesActive }}'
             - '--spring.application.name={{ include "bluesky-project.name" . }}'
