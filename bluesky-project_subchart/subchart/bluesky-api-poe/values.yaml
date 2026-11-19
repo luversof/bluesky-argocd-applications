@@ -52,7 +52,7 @@ bluesky-project:
   command:
     - sh
     - -c
-    - apk add --no-cache nodejs npm imagemagick git luajit && exec java -cp @/app/jib-classpath-file @/app/jib-main-class-file "$@"
+    - apk add --no-cache nodejs npm imagemagick imagemagick-webp git luajit && exec java -cp @/app/jib-classpath-file @/app/jib-main-class-file "$@"
     - sh
   # @Value("${poe.*}") 의 env relaxed binding: 점/대시 → '_' (대시 제거형 POE_DATADIR 는 안 붙음)
   # LD_LIBRARY_PATH/LUA_CPATH 는 JVM(ProcessBuilder) 이 luajit 자식 프로세스에 그대로 상속시킨다.
@@ -69,6 +69,9 @@ bluesky-project:
       value: /usr/local/app/.poe-gamedata/poe2
     - name: POE2_POB_SRC_DIR
       value: /opt/poe-rt/pob2-src
+    # 갱신 스크립트(calibrate · seeds 등)가 엔진 API 를 부를 주소 — 기본값은 로컬 개발 서버(https://localhost:40135)
+    - name: POE_API_BASE
+      value: http://localhost:30135
     - name: POE_POB_LUAJIT_PATH
       value: /opt/poe-rt/bin/luajit
     - name: LD_LIBRARY_PATH
