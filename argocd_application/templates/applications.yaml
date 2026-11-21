@@ -1,6 +1,9 @@
 {{- $root := . }}
 {{- range .Values.bluesky }}
-{{- if has $root.Values.env (.envs | default (list "home" "work")) }}
+{{- /* default 를 쓰면 envs: [] 도 빈 값으로 보고 모든 PC 가 된다. 키가 있으면 그대로 쓴다 */}}
+{{- $envs := list "home" "work" }}
+{{- if hasKey . "envs" }}{{ $envs = .envs }}{{ end }}
+{{- if has $root.Values.env $envs }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application

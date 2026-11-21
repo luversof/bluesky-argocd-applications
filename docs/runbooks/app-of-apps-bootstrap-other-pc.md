@@ -16,8 +16,8 @@ home PC에는 루트 앱 `bluesky-root`가 등록되어 있고, 자식 Applicati
 - 루트 앱의 `prune`은 `false`다. 목록에 없는 이 PC의 Application은 지워지지 않고 그대로 남는다(루트 앱이 관리하지 않을 뿐).
 - 기존 Application에는 `resources-finalizer`가 없다. 넣지 않는다. Application을 지워도 워크로드가 남게 하려는 것이다.
 - **오픈소스는 PC마다 설치한 것이 다르다. 이 PC에 실제로 설치된 것만 등록한다.**
-  `values.yaml`의 `opensource` 항목은 `envs`에 적힌 PC에만 등록되고, 지금은 모두 `envs: [home]`이거나 `envs: []`이다.
-  그래서 처음 렌더하면 work에는 opensource 앱이 하나도 없다. 이 PC에 설치된 것에만 `work`를 추가한다(1-1번).
+  `values.yaml`의 `opensource` 항목은 `envs`에 적힌 PC에만 등록된다(`envs`가 없거나 `[]`이면 어디에도 등록하지 않는다).
+  2026-11-22 현재 대부분 `envs: [home, work]`다(work PC가 2026-11-16 Reposilite·zot 전환 때 추가). 등록 전에 `env=work` 렌더 결과의 opensource 앱이 이 PC에 실제로 설치되어 있는지 확인하고, 없는 것은 `work`를 뺀다(1-1번).
   설치되지 않은 오픈소스에 `work`를 넣으면 루트 앱 등록과 함께 새로 설치되므로 넣지 않는다. 새로 설치하려는 것이면 사용자에게 먼저 묻는다.
 
 ## 1. 준비

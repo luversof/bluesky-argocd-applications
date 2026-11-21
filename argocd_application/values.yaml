@@ -1,4 +1,4 @@
-# PC 구분값. 루트 앱(bootstrap/root-application.yaml)의 helm parameter 로 덮어쓴다.
+# PC 구분값. 루트 앱(bootstrap/root-home.yaml, root-work.yaml)의 helm parameter 로 덮어쓴다.
 #   home: subchart_home/buildInfo-*, values-home.yaml
 #   work: subchart_work/buildInfo-*, values-work.yaml
 env: home
@@ -7,7 +7,7 @@ repoURL: https://github.com/luversof/bluesky-argocd-applications.git
 targetRevision: develop
 
 # 앱별 옵션 (생략하면 기본값)
-#   envs: [home, work]   이 앱을 등록할 PC. bluesky 는 생략하면 모든 PC, opensource 는 생략하면 등록 안 함
+#   envs: [home, work]   이 앱을 등록할 PC. bluesky 는 생략하면 모든 PC, opensource 는 생략하면 등록 안 함. [] 는 둘 다 등록 안 함
 #   autoSync: true       false 면 syncPolicy 를 넣지 않는다 (ArgoCD UI 에서 수동 sync)
 #   valuesObject: {}     helm valuesObject 를 그대로 넘긴다
 
@@ -85,12 +85,6 @@ opensource:
     envs: [home, work]
   - name: home-assistant
     envs: [home]
-  - name: superset
-    envs: []
-  - name: minio
-    envs: []
-  - name: zipkin
-    envs: []
   #
   # 추가 PostgreSQL 메이저 버전 예시: 같은 opensource/postgres 차트를 재사용하되 deployCurrent=false 로
   # 현재(18.4)는 렌더하지 않고 extraVersions 만 배포한다. 리소스 이름이 postgres-19-* 로 분리된다.

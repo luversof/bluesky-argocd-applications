@@ -7,63 +7,18 @@ bluesky-project:
     nodePort: 30103
   ingress:
     enabled: true
+    # 앱마다 host 를 추가하지 않도록 와일드카드로 받는다. 어느 앱으로 갈지는 gateway 라우트(bluesky-cloud)가 정한다.
+    # Traefik 와일드카드는 한 단계만 매칭한다(a.b.web.bluesky.local 은 안 된다). tls-secret 인증서도 *.cloud·*.api·*.web 를 포함한다.
     hosts:
-    - host: gateway.cloud.bluesky.local
+    - host: "*.cloud.bluesky.local"
       paths:
       - path: /
         pathType: Prefix
-    - host: blog.api.bluesky.local
+    - host: "*.api.bluesky.local"
       paths:
       - path: /
         pathType: Prefix
-    - host: board.api.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: bookkeeping.api.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: stock.api.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: user.api.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: admin.cloud.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: config.cloud.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: eureka1.cloud.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: eureka2.cloud.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: dynamiccrud2.web.bluesky.local
-      redirectHttps: true
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: gate.web.bluesky.local
-      redirectHttps: true
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: apidocs.web.bluesky.local
-      redirectHttps: true
-      paths:
-      - path: /
-        pathType: Prefix
-    - host: user.web.bluesky.local
+    - host: "*.web.bluesky.local"
       redirectHttps: true
       paths:
       - path: /

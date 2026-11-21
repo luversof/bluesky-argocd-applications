@@ -1,3 +1,0 @@
-PersistentVolume:
-  hostPath:
-    path: 
