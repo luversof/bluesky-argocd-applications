@@ -1,16 +1,20 @@
 {{- /*
   현재(18.4) 인스턴스와 분리해 배포하는 "추가 메이저 버전" 인스턴스들.
   values 의 extraVersions 목록을 순회하며 버전마다 독립된
-  Secret / Deployment / Service / PVC / PV 를 생성한다. 목록이 비어 있으면 아무것도 만들지 않는다.
+  Secret / PVC / Deployment / Service / 백업 CronJob 을 생성한다. 목록이 비어 있으면 아무것도 만들지 않는다.
 
   같은 차트를 가리키는 별도 ArgoCD Application에서 deployCurrent=false 로 두면
   현재 인스턴스 없이 이 추가 버전만 배포된다(리소스 이름이 postgres-<major>-* 로 분리되어 충돌 없음).
 
+  접속: 버전은 포트로 구분한다(DB 접속에는 호스트 이름이 서버로 전달되지 않아 이름으로는 나눌 수 없다).
+    클러스터 밖  postgres.bluesky.local:54<major>          예: 19 → 5419
+    클러스터 안  postgres-<major>-service.opensource:54<major>
+
   필드:
     major     (필수) 메이저 버전 문자열. 예: "19"
     image     (필수) 컨테이너 이미지. 예: postgres:19.0
-    hostPath  (필수) 현재 인스턴스와 다른 호스트 경로. 예: /mnt/c/data/postgres-19
-    storage   (선택) 볼륨 크기. 기본 2Gi
+    port      (선택) 서비스 포트. 기본 54<major>
+    storage   (선택) local-path 볼륨 크기. 기본 20Gi
     user      (선택) DB 사용자. 기본 root
     password  (선택) DB 비밀번호. 기본 root
     mountPath (선택) 데이터 마운트 경로. 기본 /var/lib/postgresql
@@ -29,33 +33,19 @@ data:
   postgres-user: {{ .user | default "root" | b64enc }}
   postgres-password: {{ .password | default "root" | b64enc }}
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: postgres-{{ .major }}-pv
-  labels:
-    app: postgres-{{ .major }}-pv
-spec:
-  storageClassName: ""
-  capacity:
-    storage: {{ .storage | default "2Gi" }}
-  accessModes:
-  - ReadWriteOnce
-  hostPath:
-    path: {{ .hostPath }}
----
+# 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 현재 인스턴스와 같이 VM 내부 local-path에 둔다.
+# local-path 데이터는 Rancher Desktop 리셋 시 사라지므로 아래 백업 CronJob 이 함께 생성된다.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-{{ .major }}-pvc
+  name: postgres-{{ .major }}-local-pvc
 spec:
-  volumeName: postgres-{{ .major }}-pv
-  storageClassName: ""
+  storageClassName: local-path
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .storage | default "2Gi" }}
+      storage: {{ .storage | default "20Gi" }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -76,11 +66,21 @@ spec:
         app: postgres-{{ .major }}
         postgres-major: "{{ .major }}"
     spec:
+      # SIGTERM(smart shutdown) 대기 중 SIGKILL 로 강제 종료되면 통계가 유실돼 쿼리 플랜이 망가진다.
+      # deployment.yaml 과 동일하게 preStop 에서 fast shutdown 으로 정상 종료시킨다.
+      terminationGracePeriodSeconds: 120
       containers:
       - name: postgres
         image: {{ .image }}
         ports:
         - containerPort: 5432
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - 'pg_ctl -D "$PGDATA" -m fast -w -t 110 stop'
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -98,7 +98,7 @@ spec:
       volumes:
       - name: postgres-volume
         persistentVolumeClaim:
-          claimName: postgres-{{ .major }}-pvc
+          claimName: postgres-{{ .major }}-local-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -111,7 +111,60 @@ spec:
     app: postgres-{{ .major }}
   ports:
   - protocol: TCP
-    port: 5432
+    port: {{ .port | default (printf "54%v" .major) }}
     targetPort: 5432
-  type: ClusterIP
+  type: LoadBalancer
+{{- if $.Values.backup.hostPath.path }}
+---
+# 현재 인스턴스의 postgres-backup 과 같은 방식. 파일은 <backup 경로>/<major>/ 하위에 둔다
+# (상위 폴더의 postgres-*.sql.gz 를 7개만 남기는 현재 인스턴스 백업이 이 파일을 지우지 않게)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-{{ .major }}-backup
+spec:
+  schedule: "10 18 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: backup
+            image: {{ .image }}
+            env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  key: postgres-user
+                  name: postgres-{{ .major }}-secret
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgres-password
+                  name: postgres-{{ .major }}-secret
+            command:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+              rm -f /backup/*.tmp   # 실패한 이전 실행이 남긴 조각
+              f=/backup/postgres-{{ .major }}-$(date +%Y-%m-%d-%H%M).sql.gz
+              pg_dumpall -h postgres-{{ .major }}-service -p {{ .port | default (printf "54%v" .major) }} | gzip > "$f.tmp"
+              mv "$f.tmp" "$f"
+              cd /backup && ls -1t postgres-*.sql.gz | tail -n +8 | xargs -r rm -f
+              ls -l /backup
+            volumeMounts:
+            - name: backup
+              mountPath: /backup
+          volumes:
+          - name: backup
+            hostPath:
+              path: {{ $.Values.backup.hostPath.path }}/{{ .major }}
+              type: DirectoryOrCreate
+{{- end }}
 {{- end }}

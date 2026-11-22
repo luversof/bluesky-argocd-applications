@@ -19,11 +19,24 @@ spec:
         app: postgres
         postgres-major: "18"
     spec:
+      # k8s 는 이미지의 STOPSIGNAL(SIGINT)을 무시하고 항상 SIGTERM 을 보낸다.
+      # PostgreSQL 에서 SIGTERM 은 smart shutdown 이라 접속 클라이언트가 끊길 때까지 기다리고,
+      # grace period 안에 못 끝내면 SIGKILL 로 강제 종료된다(비정상 종료).
+      # 그러면 통계(pg_stat)가 유실돼 플래너가 테이블 크기를 오판하고 쿼리가 급격히 느려진다.
+      # preStop 에서 fast shutdown 으로 체크포인트까지 끝내고 정상 종료시킨다.
+      terminationGracePeriodSeconds: 120
       containers:
       - name: postgres
         image: postgres:18.4
         ports:
         - containerPort: 5432
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - 'pg_ctl -D "$PGDATA" -m fast -w -t 110 stop'
         env:
         - name: POSTGRES_USER
           valueFrom:
