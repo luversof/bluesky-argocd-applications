@@ -3,8 +3,6 @@
 
 springProfilesActive: k8sdev
 
-namespace: default
-
 image:
   host:
   artifactId: 
@@ -43,27 +41,8 @@ volumeMounts: []
 volumes: []
 initContainers: []
 
-# 앱 데이터용 PVC (<앱이름>-data 로 생성됨)
-persistence:
-  enabled: false
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: ""
-  size: 1Gi
-  
 ingress:
   enabled: false
 
 replicaCount: 1
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 1
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 80

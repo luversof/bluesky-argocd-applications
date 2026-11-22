@@ -5,13 +5,6 @@ bluesky-project:
   service:
     port: 30135
     nodePort: 30135
-  ingress:
-#    enabled: true
-    hosts:
-    - host: poe.api.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix
 
   # ── PoE 엔진 런타임 구성 (별도 base 이미지 없음 — 전부 여기서 관리) ─────────────
   # 앱 이미지는 다른 서비스와 동일한 표준 jib 이미지(temurin-alpine + jar + tools/poe-pob).
@@ -22,8 +15,6 @@ bluesky-project:
   #  - PoB 소스는 hostPath(.poe-gamedata/poe1/work/pob-src)에 있지만 /mnt/c(9p)는 소파일 다량 읽기가 느려
   #    워커 기동이 수십 초씩 걸리므로 emptyDir 로 1회 복사해 로컬 디스크 속도로 읽게 한다(.git 제외)
   # 게임 데이터(JSON/icons)는 Windows 호스트의 ~/.poe-gamedata 를 hostPath 로 직접 마운트(Rancher Desktop/WSL2 = /mnt/c).
-  persistence:
-    enabled: false
   initContainers:
     - name: poe-runtime
       image: alpine:3.20

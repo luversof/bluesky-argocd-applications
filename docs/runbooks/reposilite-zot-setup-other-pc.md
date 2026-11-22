@@ -14,7 +14,7 @@ work PC의 Nexus는 업로드가 HTTP 400으로 계속 거부됐고(동의는 �
 | Maven proxy + group | `maven-central`, `maven-public` | Reposilite `public` (proxied: `releases`, `snapshots`, Maven Central(store)) |
 | Docker hosted | `docker-hosted` (`nexus-service:8083`, `nexus.bluesky.local:8083`) | zot (`zot-service:5000`, `zot.bluesky.local:5000`) |
 
-zot도 Nexus와 같이 HTTP, 인증 없이 둔다(docs/adr/0001-nexus-internal-http.md와 같은 이유).
+zot도 Nexus와 같이 HTTP, 인증 없이 둔다(docs/adr/0002-reposilite-zot-internal-http.md).
 
 ## 방식: 주소는 프로젝트 git(pom)에, Jenkins에는 자격 증명만
 

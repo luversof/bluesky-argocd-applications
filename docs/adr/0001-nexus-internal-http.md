@@ -1,6 +1,6 @@
 # 0001. Nexus 내부 통신은 HTTP로 유지한다
 
-- 상태: 채택
+- 상태: 대체됨 → [0002](0002-reposilite-zot-internal-http.md) (Nexus 제거)
 - 날짜: 2026-11-14
 - 관련 이슈: #1
 

@@ -6,10 +6,3 @@ bluesky-project:
   service:
     port: 30101
     nodePort: 30101
-  ingress:
-#    enabled: true
-    hosts:
-    - host: config.cloud.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix

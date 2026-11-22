@@ -6,6 +6,9 @@ metadata:
     app: loki
 spec:
   replicas: 1
+  # 데이터 디렉터리를 한 pod 만 쓰도록 옛 pod 를 먼저 내린다 (RollingUpdate 면 잠시 두 pod 가 같은 PVC 에 쓴다)
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: loki

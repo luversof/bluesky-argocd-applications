@@ -5,10 +5,3 @@ bluesky-project:
   service:
     port: 30120
     nodePort: 30120
-  ingress:
-#    enabled: true
-    hosts:
-    - host: apidocs.web.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix

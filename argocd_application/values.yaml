@@ -8,8 +8,9 @@ targetRevision: develop
 
 # 앱별 옵션 (생략하면 기본값)
 #   envs: [home, work]   이 앱을 등록할 PC. bluesky 는 생략하면 모든 PC, opensource 는 생략하면 등록 안 함. [] 는 둘 다 등록 안 함
-#   autoSync: true       false 면 syncPolicy 를 넣지 않는다 (ArgoCD UI 에서 수동 sync)
-#   valuesObject: {}     helm valuesObject 를 그대로 넘긴다
+#   valuesObject: {}     helm valuesObject 로 넘긴다. valueFiles(values-<env>.yaml 등) 위에 덮인다
+#   path: opensource/x   opensource 만. 차트 경로가 opensource/<name> 이 아닐 때
+# 목록을 바꾸면 push 전에 scripts/check-apps.sh 로 PC별 등록 목록을 확인한다
 
 # bluesky-project_subchart 를 쓰는 앱. buildInfo 는 이미지 빌드 번호를 가져올 buildInfo-* 이름
 bluesky:

@@ -27,12 +27,10 @@ spec:
       valuesObject:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  {{- if or (not (hasKey . "autoSync")) .autoSync }}
   syncPolicy:
     automated:
       prune: false
       selfHeal: false
-  {{- end }}
 {{- end }}
 {{- end }}
 {{- range .Values.opensource }}
@@ -53,18 +51,15 @@ spec:
     repoURL: {{ $root.Values.repoURL }}
     targetRevision: {{ $root.Values.targetRevision }}
     helm:
-      {{- if .valuesObject }}
-      valuesObject:
-        {{- toYaml .valuesObject | nindent 8 }}
-      {{- else }}
       valueFiles:
         - values-{{ $root.Values.env }}.yaml
+      {{- with .valuesObject }}
+      valuesObject:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
-  {{- if or (not (hasKey . "autoSync")) .autoSync }}
   syncPolicy:
     automated:
       prune: false
       selfHeal: false
-  {{- end }}
 {{- end }}
 {{- end }}

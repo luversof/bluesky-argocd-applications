@@ -5,10 +5,3 @@ bluesky-project:
   service:
     port: 30100
     nodePort: 30104
-  ingress:
-#    enabled: true
-    hosts:
-    - host: eureka2.cloud.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix

@@ -12,10 +12,3 @@ bluesky-project:
   service:
     port: 30134
     nodePort: 30134
-  ingress:
-#    enabled: true
-    hosts:
-    - host: stock.api.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix

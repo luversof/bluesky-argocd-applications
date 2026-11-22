@@ -11,7 +11,7 @@ home PC에는 루트 앱 `bluesky-root`가 등록되어 있고, 자식 Applicati
   그래서 **등록 전에 이 PC의 실제 spec과 `env=work` 렌더 결과를 비교해 차이를 0으로 만든다.** 차이가 있는 채로 등록하면 그 앱의 valueFiles나 sync 정책이 바뀌어 워크로드가 다시 배포될 수 있다.
 - 차이를 없애는 방법은 둘 중 하나다. 어느 쪽이 맞는지 판단이 안 서면 사용자에게 묻는다.
   - git이 맞으면: 그 차이는 받아들인다(등록하면 git 값으로 바뀐다). 영향받는 앱을 사용자에게 알린다.
-  - 실제 상태가 맞으면: `argocd_application/values.yaml`(앱 목록, `envs`, `autoSync`, `valuesObject`)이나 차트를 고쳐 git을 실제에 맞춘다.
+  - 실제 상태가 맞으면: `argocd_application/values.yaml`(앱 목록, `envs`, `valuesObject`)이나 차트를 고쳐 git을 실제에 맞춘다.
     **home PC 렌더 결과가 바뀌지 않게 한다.** 고친 뒤 `env=home` 렌더 결과도 커밋 전과 같은지 확인한다.
 - 루트 앱의 `prune`은 `false`다. 목록에 없는 이 PC의 Application은 지워지지 않고 그대로 남는다(루트 앱이 관리하지 않을 뿐).
 - 기존 Application에는 `resources-finalizer`가 없다. 넣지 않는다. Application을 지워도 워크로드가 남게 하려는 것이다.

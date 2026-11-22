@@ -1,7 +1,4 @@
 PersistentVolume:
-  jenkinsDockerConfig:
-    hostPath:
-      path: /mnt/c/data/jenkins-docker
   jenkinsHome:
     hostPath:
       path: /mnt/c/data/jenkins-home

@@ -11,7 +11,8 @@ spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
-      backoffLimit: 0
+      # 부팅 직후 밀린 실행은 DB 가 아직 안 떠서 실패하므로 몇 번 다시 시도한다 (10·20·40·80초 간격)
+      backoffLimit: 4
       template:
         spec:
           restartPolicy: Never
@@ -31,6 +32,7 @@ spec:
             - -c
             - |
               set -euo pipefail
+              rm -f /backup/*.tmp   # 실패한 이전 실행이 남긴 조각
               q(){ /opt/mssql-tools18/bin/sqlcmd -C -b -S mssql-service -U sa -h -1 -W -Q "SET NOCOUNT ON; $1"; }
               ts=$(date +%Y-%m-%d-%H%M)
               for d in $(q "SELECT name FROM sys.databases WHERE database_id > 4 AND state_desc = 'ONLINE'"); do

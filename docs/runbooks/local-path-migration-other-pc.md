@@ -36,11 +36,13 @@ spec:
 
 ## 1. Jenkins (데이터 유실 없음)
 
-- workspace와 `.m2`가 `jenkins-workspace-local-pvc`, `jenkins-m2-local-pvc`로 바뀐다. workspace는 git clone으로, `.m2`는 Nexus에서 다시 채워진다. 복사는 선택이다(첫 빌드가 느린 것을 피하려면 `C:\data\jenkins-m2\repository`를 `jenkins-m2-local-pvc`로 복사).
+- workspace와 `.m2`가 `jenkins-workspace-local-pvc`, `jenkins-m2-local-pvc`로 바뀐다. workspace는 git clone으로, `.m2`는 Reposilite에서 다시 채워진다. 복사는 선택이다(첫 빌드가 느린 것을 피하려면 `C:\data\jenkins-m2\repository`를 `jenkins-m2-local-pvc`로 복사).
 - **Job 설정은 git에 없으므로 직접 바꾼다**: `bluesky-project » bluesky-project ci develop`의 goals에서 `-DskipTests` → `-Dmaven.test.skip=true`. (다른 ci job도 같은 goals면 같이)
 - 예전 workspace `C:\data\jenkins-home\workspace`는 더 이상 쓰이지 않는다.
 
-## 2. Nexus (가장 먼저: CI와 이미지 pull이 의존)
+## 2. Nexus (해당 없음)
+
+Nexus는 Reposilite·zot으로 바뀌어 양쪽 PC에서 제거됐다(`reposilite-zot-setup-other-pc.md`). 아래 절차는 기록으로만 남긴다.
 
 1. auto-sync 끄고 `nexus-deployment` replicas 0.
 2. `/nexus-data`를 `nexus-data-local-pvc`로 복사. **blob 전체를 복사하지 말고 DB가 참조하는 blob만** 복사한다(이 PC에서는 175G 중 약 140G가 DB에 없는 고아 blob이었다). 절차:

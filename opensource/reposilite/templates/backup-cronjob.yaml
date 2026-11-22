@@ -25,6 +25,7 @@ spec:
             - -c
             - |
               set -eu
+              rm -f /backup/*.tmp   # 실패한 이전 실행이 남긴 조각
               f=/backup/reposilite-$(date +%Y-%m-%d-%H%M).tar.gz
               tar -czf "$f.tmp" -C /data --exclude=./repositories/snapshots --exclude=./repositories/public .
               mv "$f.tmp" "$f"

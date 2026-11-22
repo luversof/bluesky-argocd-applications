@@ -5,10 +5,3 @@ bluesky-project:
   service:
     port: 30124
     nodePort: 30124
-  ingress:
-#    enabled: true
-    hosts:
-    - host: user.web.bluesky.local
-      paths:
-      - path: /
-        pathType: Prefix

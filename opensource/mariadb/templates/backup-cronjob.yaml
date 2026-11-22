@@ -10,7 +10,8 @@ spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
-      backoffLimit: 0
+      # 부팅 직후 밀린 실행은 DB 가 아직 안 떠서 실패하므로 몇 번 다시 시도한다 (10·20·40·80초 간격)
+      backoffLimit: 4
       template:
         spec:
           restartPolicy: Never
@@ -28,6 +29,7 @@ spec:
             - -c
             - |
               set -euo pipefail
+              rm -f /backup/*.tmp   # 실패한 이전 실행이 남긴 조각
               f=/backup/mariadb-$(date +%Y-%m-%d-%H%M).sql.gz
               mariadb-dump -h mariadb-service -uroot --skip-ssl --all-databases --single-transaction --routines --events --triggers | gzip > "$f.tmp"
               mv "$f.tmp" "$f"
