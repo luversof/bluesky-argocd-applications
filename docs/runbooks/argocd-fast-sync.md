@@ -7,7 +7,7 @@ webhook은 이 PC로 들어올 수 없다. 그래서 ArgoCD는 git을 주기적�
 - 손으로 한 push: 조회 주기를 60초(+jitter 10초)로 줄인다.
 
 git에 있는 것은 Jenkins의 ServiceAccount와 RBAC(`opensource/jenkins/templates/argocd-refresh-rbac.yaml`), 그리고 `scripts/argocd-refresh.sh`다.
-아래 두 가지는 git 밖이라 PC마다 직접 한다. home은 2026-11-24에 적용했다.
+아래 두 가지는 PC마다 직접 한다. home은 2026-11-24에 적용했다.
 
 ## 1. Jenkins "update argocd manifest" job
 
@@ -27,8 +27,11 @@ git에 있는 것은 Jenkins의 ServiceAccount와 RBAC(`opensource/jenkins/templ
 
 ## 2. ArgoCD 조회 주기
 
+값은 bluesky-kubernetes 저장소의 `argocd/argocd-cm-patch.yaml`에 있다. ArgoCD를 새로 설치할 때 `argocd/argocd.bat`가 적용한다.
+이미 설치된 PC는 bluesky-kubernetes의 `argocd` 폴더에서 아래를 실행한다.
+
 ```sh
-kubectl -n argocd patch cm argocd-cm --type merge -p '{"data":{"timeout.reconciliation":"60s","timeout.reconciliation.jitter":"10s"}}'
+kubectl -n argocd patch configmap argocd-cm --type merge --patch-file=argocd-cm-patch.yaml
 kubectl -n argocd rollout restart statefulset/argocd-application-controller deploy/argocd-repo-server
 ```
 
