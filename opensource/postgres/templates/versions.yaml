@@ -1,14 +1,13 @@
 {{- /*
-  현재(18.4) 인스턴스와 분리해 배포하는 "추가 메이저 버전" 인스턴스들.
-  values 의 extraVersions 목록을 순회하며 버전마다 독립된
-  Secret / PVC / Deployment / Service / 백업 CronJob 을 생성한다. 목록이 비어 있으면 아무것도 만들지 않는다.
+  PostgreSQL 메이저 버전마다 독립된 인스턴스. values 의 versions 목록을 순회하며 버전마다
+  Secret / PVC / Deployment / Service / 백업 CronJob 을 만든다.
+  메이저 업그레이드는 데이터 디렉터리를 그대로 못 읽으므로, 새 버전을 목록에 더해 같이 띄우고
+  데이터를 옮긴 뒤 옛 버전을 뺀다 (docs/runbooks/postgres-major-upgrade.md).
 
-  같은 차트를 가리키는 별도 ArgoCD Application에서 deployCurrent=false 로 두면
-  현재 인스턴스 없이 이 추가 버전만 배포된다(리소스 이름이 postgres-<major>-* 로 분리되어 충돌 없음).
-
-  접속: 버전은 포트로 구분한다(DB 접속에는 호스트 이름이 서버로 전달되지 않아 이름으로는 나눌 수 없다).
+  앱은 active.yaml 의 고정 주소(postgres-service:5432)를 쓴다. 버전별 주소는 이전·검증용이다.
     클러스터 밖  postgres.bluesky.local:54<major>          예: 19 → 5419
     클러스터 안  postgres-<major>-service.opensource:54<major>
+  (DB 접속에는 호스트 이름이 서버로 전달되지 않아 버전은 포트로 나눈다)
 
   필드:
     major     (필수) 메이저 버전 문자열. 예: "19"
@@ -21,7 +20,7 @@
               (postgres 18+ 이미지는 /var/lib/postgresql/<major>/docker 하위에 데이터를 두므로
                부모 디렉터리를 마운트해 이미지가 관리하게 둔다)
 */}}
-{{- range .Values.extraVersions }}
+{{- range .Values.versions }}
 ---
 apiVersion: v1
 kind: Secret
@@ -33,7 +32,7 @@ data:
   postgres-user: {{ .user | default "root" | b64enc }}
   postgres-password: {{ .password | default "root" | b64enc }}
 ---
-# 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 현재 인스턴스와 같이 VM 내부 local-path에 둔다.
+# 9p(D:\) 마운트는 작은 파일 I/O가 매우 느려 VM 내부 local-path에 둔다.
 # local-path 데이터는 Rancher Desktop 리셋 시 사라지므로 아래 백업 CronJob 이 함께 생성된다.
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -67,7 +66,7 @@ spec:
         postgres-major: "{{ .major }}"
     spec:
       # SIGTERM(smart shutdown) 대기 중 SIGKILL 로 강제 종료되면 통계가 유실돼 쿼리 플랜이 망가진다.
-      # deployment.yaml 과 동일하게 preStop 에서 fast shutdown 으로 정상 종료시킨다.
+      # preStop 에서 fast shutdown 으로 정상 종료시킨다.
       terminationGracePeriodSeconds: 120
       containers:
       - name: postgres
@@ -116,8 +115,7 @@ spec:
   type: LoadBalancer
 {{- if $.Values.backup.hostPath.path }}
 ---
-# 현재 인스턴스의 postgres-backup 과 같은 방식. 파일은 <backup 경로>/<major>/ 하위에 둔다
-# (상위 폴더의 postgres-*.sql.gz 를 7개만 남기는 현재 인스턴스 백업이 이 파일을 지우지 않게)
+# 파일은 <backup 경로>/<major>/ 에 버전별로 쌓고 7개만 남긴다
 apiVersion: batch/v1
 kind: CronJob
 metadata:

@@ -1,0 +1,33 @@
+{{- /*
+  앱이 쓰는 고정 주소. active 로 고른 버전의 pod 를 가리킨다.
+    클러스터 안  postgres-service.opensource:5432   (Secret: postgres-secret)
+    클러스터 밖  postgres.bluesky.local:5432
+  메이저 업그레이드 때 앱 설정은 그대로 두고 active 만 바꾼다.
+*/}}
+{{- $active := dict }}
+{{- range .Values.versions }}{{ if eq (toString .major) (toString $.Values.active) }}{{ $active = . }}{{ end }}{{ end }}
+{{- if not $active }}{{ fail (printf "active %q 가 versions 에 없다" (toString .Values.active)) }}{{ end }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  labels:
+    app: postgres
+data:
+  postgres-user: {{ $active.user | default "root" | b64enc }}
+  postgres-password: {{ $active.password | default "root" | b64enc }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres-{{ $active.major }}
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  type: LoadBalancer

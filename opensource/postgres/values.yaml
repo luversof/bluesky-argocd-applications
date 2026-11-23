@@ -1,23 +1,14 @@
-# 현재(기본) PostgreSQL 인스턴스(18.4) 배포 여부.
-# true  → postgres-deployment/-service/-pvc/-pv/-secret/-ingress 렌더 (기존 동작)
-# false → 현재 인스턴스는 렌더하지 않음. 추가 버전 전용 Application에서 사용.
-deployCurrent: true
+# PostgreSQL 메이저 버전 목록. 버전마다 postgres-<major>-deployment / -service / -local-pvc / -secret / -backup 이
+# 따로 생긴다. 버전별 접속 포트는 54<major>(LoadBalancer), 백업은 backup.hostPath.path/<major>/ 에 쌓인다.
+# 필드 설명은 templates/versions.yaml 머리말에 있다.
+# 메이저 업그레이드 순서는 docs/runbooks/postgres-major-upgrade.md
+versions:
+  - major: "19"
+    image: postgres:19.0
 
+# 고정 주소(postgres-service:5432, postgres.bluesky.local:5432)가 가리킬 버전. versions 에 있어야 한다.
+active: "19"
 
-# 향후 추가되는 PostgreSQL 메이저 버전을 현재(18.4) 인스턴스와 분리해 배포하기 위한 목록.
-# 비워두면 추가 인스턴스가 없다. 항목을 추가하면 버전마다
-# postgres-<major>-deployment / -service / -local-pvc / -secret / -backup 가 독립적으로 생성된다.
-# 접속 포트는 54<major>(LoadBalancer) 이고, 백업은 backup.hostPath.path/<major>/ 에 쌓인다.
-extraVersions: []
-# 예시:
-# extraVersions:
-#   - major: "19"
-#     image: postgres:19.0
-#     # port: 5419        # (기본값 54<major>)
-#     # storage: 20Gi     # (기본값 20Gi, local-path)
-#     # user: root        # (기본값 root)
-#     # password: root    # (기본값 root)
-#     # mountPath: /var/lib/postgresql   # (기본값) 이미지가 버전별 하위 디렉터리를 관리
 backup:
   hostPath:
     path:

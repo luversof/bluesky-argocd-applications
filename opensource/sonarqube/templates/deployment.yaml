@@ -66,16 +66,16 @@ spec:
         - containerPort: 9000
         env:
         - name: SONAR_JDBC_URL
-          value: "jdbc:postgresql://postgres-19-service.opensource:5419/sonarqube"
+          value: "jdbc:postgresql://postgres-service.opensource:5432/sonarqube"
         - name: SONAR_JDBC_USERNAME
           valueFrom:
             secretKeyRef:
-              name: postgres-19-secret
+              name: postgres-secret
               key: postgres-user
         - name: SONAR_JDBC_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres-19-secret
+              name: postgres-secret
               key: postgres-password
         resources:
           requests:
