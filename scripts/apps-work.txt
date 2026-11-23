@@ -19,7 +19,6 @@ mariadb
 mongo
 mssql
 opentelemetry-collector
-postgres
 postgres-19
 prometheus
 rabbitmq

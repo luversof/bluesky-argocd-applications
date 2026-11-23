@@ -66,8 +66,6 @@ opensource:
     envs: [home, work]
   - name: zot
     envs: [home, work]
-  - name: postgres
-    envs: [home, work]
   - name: rabbitmq
     envs: [home, work]
   - name: redis
@@ -86,9 +84,9 @@ opensource:
     envs: [home, work]
   - name: home-assistant
     envs: [home]
-  # 추가 PostgreSQL 메이저 버전: 같은 opensource/postgres 차트를 재사용하되 deployCurrent=false 로
-  # 현재(18.4)는 렌더하지 않고 extraVersions 만 배포한다. 리소스 이름이 postgres-<major>-* 로 분리되고
-  # 접속 포트는 54<major> 다(postgres.bluesky.local:5419). 이전 버전을 쓰는 곳이 없어지면 그 앱을 목록에서 뺀다.
+  # PostgreSQL 은 메이저 버전마다 앱 하나다. 같은 opensource/postgres 차트를 deployCurrent=false 로 쓰고
+  # extraVersions 만 배포한다. 리소스 이름이 postgres-<major>-* 로 분리되고 접속 포트는 54<major> 다
+  # (postgres.bluesky.local:5419). 이전 버전을 쓰는 곳이 없어지면 그 앱을 목록에서 뺀다 (18 은 2026-11-24 제거).
   - name: postgres-19
     envs: [home, work]
     path: opensource/postgres
