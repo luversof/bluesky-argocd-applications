@@ -14,6 +14,7 @@
     image     (필수) 컨테이너 이미지. 예: postgres:19.0
     port      (선택) 서비스 포트. 기본 54<major>
     storage   (선택) local-path 볼륨 크기. 기본 20Gi
+    maxConnections (선택) max_connections. 기본 200
     user      (선택) DB 사용자. 기본 root
     password  (선택) DB 비밀번호. 기본 root
     mountPath (선택) 데이터 마운트 경로. 기본 /var/lib/postgresql
@@ -71,6 +72,8 @@ spec:
       containers:
       - name: postgres
         image: {{ .image }}
+        # 기본 100 이면 앱 롤링 재시작 중 옛·새 pod 풀이 겹쳐 "too many clients already" 로 기동이 실패한다
+        args: ["-c", "max_connections={{ .maxConnections | default 200 }}"]
         ports:
         - containerPort: 5432
         lifecycle:

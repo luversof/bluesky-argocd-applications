@@ -65,16 +65,21 @@ push 후 루트 앱이 sync되면 `postgres` 앱이 새 차트로 바뀐다. 이
 남는 것은 직접 정리한다.
 
 1. 18에 연결이 없는지 확인하고 마지막 백업을 뜬다.
+   - `cronjob/postgres-backup`으로 job을 만들면 안 된다. 이 CronJob은 `postgres-service`를 덤프하는데,
+     그 주소가 이미 19를 가리켜 18 클라이언트로는 버전이 맞지 않아 실패한다. 18 pod에서 직접 덤프한다.
    ```sh
-   kubectl -n opensource create job postgres-backup-final --from=cronjob/postgres-backup
+   # work 는 /c/data/backup/postgres, home 은 /d/dev/data/backup/postgres
+   kubectl -n opensource exec deploy/postgres-deployment -- pg_dumpall -U root \
+     | gzip > /c/data/backup/postgres/postgres-18-final-$(date +%Y-%m-%d-%H%M).sql.gz
    ```
 2. 18 리소스와 앱 `postgres-19`를 지운다. 앱에 finalizer가 없어서, 앱을 지워도 `postgres-19-*` 리소스는 남는다.
    ```sh
-   kubectl -n opensource delete deploy/postgres-deployment ingress/postgres-ingress \
-     cronjob/postgres-backup job/postgres-backup-final
+   kubectl -n opensource delete deploy/postgres-deployment ingress/postgres-ingress cronjob/postgres-backup
    kubectl -n argocd delete application postgres-19
    kubectl -n opensource delete pvc/postgres-local-pvc   # 18 데이터. 되돌릴 수 없다
    ```
+   - 리소스의 추적 표시가 아직 `postgres-19`라서 `postgres` 앱이 OutOfSync(SharedResourceWarning)로 남는다.
+     ArgoCD에서 `postgres` 앱을 한 번 sync하면 풀린다.
 3. connection_info DB 두 곳의 주소를 고정 주소로 바꾼다.
    ```sql
    -- connection_info_k8sdev
